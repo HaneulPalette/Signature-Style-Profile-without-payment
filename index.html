@@ -4,13 +4,12 @@
 <meta charset="UTF-8">
 <title>Haneul Palette</title>
 
-<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Noto+Sans:wght@300;400&display=swap" rel="stylesheet">
 
-<!-- PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
+
 body {
     font-family: 'Noto Sans', sans-serif;
     background: #f5f3ef;
@@ -45,10 +44,10 @@ button {
     border-radius: 8px;
 }
 
-/* PDF STYLE (HIDDEN) */
+/* PDF STYLE */
 .page {
     width: 800px;
-    background: #ffffff;
+    background: linear-gradient(to bottom, #ffffff, #f7f5f2);
     padding: 50px;
 }
 
@@ -63,12 +62,14 @@ button {
 .title {
     font-family: 'Playfair Display', serif;
     font-size: 34px;
+    letter-spacing: 3px;
 }
 
 .subtitle {
-    font-size: 13px;
-    color: #888;
-    margin-bottom: 40px;
+    font-size: 12px;
+    color: #999;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
 }
 
 .section-title {
@@ -86,6 +87,7 @@ button {
     height: 60px;
     border-radius: 8px;
 }
+
 </style>
 </head>
 
@@ -109,7 +111,7 @@ View Full Report
 
 </div>
 
-<!-- 🔥 PDF TEMPLATE -->
+<!-- PDF TEMPLATE -->
 <div id="report" class="page" style="display:none;">
 
 <div class="header">
@@ -179,19 +181,19 @@ function analyze(){
             if(avg > 170){
                 season = "Light Spring";
                 undertone = "Warm";
-                harmony = "Light, fresh tones enhance clarity";
+                harmony = "Light, fresh tones enhance clarity.";
                 colors = ["#FAD6A5","#FFE5B4","#FFF2CC"];
             }
             else if(avg > 120){
                 season = "Soft Autumn";
                 undertone = "Warm-Neutral";
-                harmony = "Muted earthy tones create balance";
+                harmony = "Muted earthy tones create balance.";
                 colors = ["#A67B5B","#C2A083","#E6C7A8"];
             }
             else{
                 season = "Deep Winter";
                 undertone = "Cool";
-                harmony = "Deep rich tones create contrast";
+                harmony = "Deep rich tones create contrast.";
                 colors = ["#2C2C54","#3A3A6A","#1B1B3A"];
             }
 
@@ -220,10 +222,10 @@ function generatePDF(){
     document.getElementById("undertone").innerText = resultData.undertone;
 
     document.getElementById("recommend").innerText =
-    "Wear tones that align with your natural harmony for a refined appearance.";
+    "Refined tones aligned with your natural harmony enhance presence with quiet elegance.";
 
     document.getElementById("avoid").innerText =
-    "Avoid colors that overpower your natural balance.";
+    "Avoid overly harsh or mismatched tones.";
 
     let palette = document.getElementById("palette");
     palette.innerHTML = "";
@@ -235,7 +237,24 @@ function generatePDF(){
         palette.appendChild(div);
     });
 
-    html2pdf().from(document.getElementById("report")).save("Haneul_Palette_Report.pdf");
+    const report = document.getElementById("report");
+
+    // 🔥 FIX FOR BLANK PDF
+    report.style.display = "block";
+    report.style.position = "absolute";
+    report.style.left = "-9999px";
+
+    const opt = {
+        margin: 0,
+        filename: "Haneul_Palette_Report.pdf",
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'px', format: [800, 1100] }
+    };
+
+    html2pdf().set(opt).from(report).save().then(()=>{
+        report.style.display = "none";
+    });
 }
 
 </script>
