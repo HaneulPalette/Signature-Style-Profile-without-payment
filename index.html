@@ -88,6 +88,10 @@ button {
     border-radius: 8px;
 }
 
+img {
+  max-width: 100%;
+}
+
 </style>
 </head>
 
@@ -112,7 +116,7 @@ View Full Report
 </div>
 
 <!-- PDF TEMPLATE -->
-<div id="report" class="page" style="display:none;">
+<div id="report" class="page" style="display:none; margin-top:30px;">
 
 <div class="header">
     <img src="logo.png" class="logo">
@@ -239,22 +243,17 @@ function generatePDF(){
 
     const report = document.getElementById("report");
 
-    // 🔥 FIX FOR BLANK PDF
+    // ✅ SHOW REPORT
     report.style.display = "block";
-    report.style.position = "absolute";
-    report.style.left = "-9999px";
 
-    const opt = {
-        margin: 0,
-        filename: "Haneul_Palette_Report.pdf",
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'px', format: [800, 1100] }
-    };
+    // ⏳ WAIT FOR RENDER
+    setTimeout(() => {
 
-    html2pdf().set(opt).from(report).save().then(()=>{
-        report.style.display = "none";
-    });
+        html2pdf().from(report).save("Haneul_Palette_Report.pdf").then(() => {
+            report.style.display = "none";
+        });
+
+    }, 600);
 }
 
 </script>
