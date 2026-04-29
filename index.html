@@ -1,98 +1,125 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Haneul Palette</title>
+
 <link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Noto+Sans:wght@300;400&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
 <div class="container">
 
-<img src="logo.png" class="logo">
+<div class="title">HANEUL PALETTE</div>
+<div class="subtitle">Signature Style Profile</div>
 
-<h2>Signature Style Profile</h2>
-
-<input type="file" id="img">
+<div class="upload-box">
+<input type="file" id="img" accept="image/*">
+<br>
 <button onclick="analyze()">Analyze</button>
+</div>
 
-<div id="preview" style="display:none">
-<h3>Preview</h3>
-<p>Undertone: <span id="p1"></span></p>
-<p>Season: <span id="p2"></span></p>
-<p>Contrast: <span id="p3"></span></p>
+<div id="preview" class="preview">
+    <h3>Preview</h3>
+    <p><b>Undertone:</b> <span id="p1"></span></p>
+    <p><b>Season:</b> <span id="p2"></span></p>
+    <p><b>Contrast:</b> <span id="p3"></span></p>
 
-<button onclick="openReport()">View Full Report</button>
+    <button class="download-btn" onclick="goToReport()">Get Full Report</button>
 </div>
 
 </div>
 
 <script>
 
-let result={};
-
 function analyze(){
 
-let file=document.getElementById("img").files[0];
-if(!file){alert("Upload image");return;}
+let file = document.getElementById("img").files[0];
 
-let img=new Image();
-let reader=new FileReader();
+if(!file){
+    alert("Upload image first");
+    return;
+}
 
-reader.onload=e=>img.src=e.target.result;
+let img = new Image();
+let reader = new FileReader();
 
-img.onload=function(){
+reader.onload = e => img.src = e.target.result;
 
-let canvas=document.createElement("canvas");
-let ctx=canvas.getContext("2d");
+img.onload = function(){
 
-canvas.width=100;
-canvas.height=100;
+let canvas = document.createElement("canvas");
+let ctx = canvas.getContext("2d");
 
-ctx.drawImage(img,0,0,100,100);
+canvas.width = 200;
+canvas.height = 200;
 
-let data=ctx.getImageData(0,0,100,100).data;
+ctx.drawImage(img,0,0,200,200);
+
+// center sampling
+let data = ctx.getImageData(60,60,80,80).data;
 
 let r=0,g=0,b=0,count=0;
 
 for(let i=0;i<data.length;i+=4){
-r+=data[i]; g+=data[i+1]; b+=data[i+2]; count++;
+r+=data[i];
+g+=data[i+1];
+b+=data[i+2];
+count++;
 }
 
 r/=count; g/=count; b/=count;
 
+// analysis
 let brightness=(r+g+b)/3;
-let contrast=Math.abs(r-g)+Math.abs(g-b);
+let diffRG=r-g;
+let diffRB=r-b;
 
-let undertone=r>b?"Warm":"Cool";
+let undertone;
+if(diffRB>15 && diffRG>10) undertone="Warm";
+else if(diffRB<-15) undertone="Cool";
+else undertone="Neutral";
+
+let contrastVal=Math.max(r,g,b)-Math.min(r,g,b);
+let contrast=contrastVal>50?"High":"Low";
 
 let season;
 
-// 16-season logic (improved distribution)
-if(undertone==="Warm" && brightness>180 && contrast<60) season="Light Spring";
-else if(undertone==="Warm" && brightness>170 && contrast>80) season="Bright Spring";
-else if(undertone==="Warm" && contrast>110) season="Warm Spring";
-else if(undertone==="Warm" && brightness<120 && contrast>80) season="Deep Autumn";
-else if(undertone==="Warm" && contrast<60) season="Soft Autumn";
-else season="Muted Autumn";
+if(undertone==="Warm"){
+if(brightness>170 && contrast==="Low") season="Light Spring";
+else if(brightness>150 && contrast==="High") season="Bright Spring";
+else if(brightness<120 && contrast==="High") season="Deep Autumn";
+else if(contrast==="Low") season="Soft Autumn";
+else season="Warm Autumn";
+}
 
-if(undertone==="Cool" && brightness>180 && contrast<60) season="Light Summer";
-else if(undertone==="Cool" && brightness>170) season="Cool Summer";
-else if(undertone==="Cool" && contrast<60) season="Soft Summer";
-else if(undertone==="Cool" && contrast>120) season="Bright Winter";
-else if(undertone==="Cool" && brightness<120) season="Deep Winter";
-else season="True Winter";
+else if(undertone==="Cool"){
+if(brightness>170 && contrast==="Low") season="Light Summer";
+else if(brightness>150 && contrast==="High") season="Bright Winter";
+else if(brightness<120 && contrast==="High") season="Deep Winter";
+else if(contrast==="Low") season="Soft Summer";
+else season="Cool Summer";
+}
 
-result={
+else{
+if(brightness>150) season="Soft Summer";
+else season="Soft Autumn";
+}
+
+let result={
 undertone:undertone,
 season:season,
-contrast:contrast>80?"High":"Low"
+contrast:contrast
 };
 
-document.getElementById("p1").innerText=result.undertone;
-document.getElementById("p2").innerText=result.season;
-document.getElementById("p3").innerText=result.contrast;
+localStorage.setItem("reportData",JSON.stringify(result));
+
+// preview
+document.getElementById("p1").innerText=undertone;
+document.getElementById("p2").innerText=season;
+document.getElementById("p3").innerText=contrast;
 
 document.getElementById("preview").style.display="block";
 
@@ -101,9 +128,8 @@ document.getElementById("preview").style.display="block";
 reader.readAsDataURL(file);
 }
 
-function openReport(){
-localStorage.setItem("reportData",JSON.stringify(result));
-window.open("luxury-report.html","_blank");
+function goToReport(){
+window.location.href="luxury-report.html";
 }
 
 </script>
