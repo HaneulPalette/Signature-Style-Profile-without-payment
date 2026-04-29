@@ -2,51 +2,6 @@ import numpy as np
 from PIL import Image
 from palette import generate_palette
 
-def classify_season(r, g, b, brightness, contrast):
-
-    warm = r > b
-    cool = b > r
-    bright = brightness > 170
-    soft = contrast < 45
-    deep = brightness < 120
-
-    # 🌸 SPRING
-    if warm and bright and contrast > 60:
-        return "Bright Spring"
-    if warm and soft:
-        return "Warm Spring"
-    if warm and brightness > 150:
-        return "Light Spring"
-
-    # ☀️ SUMMER
-    if cool and soft and brightness > 160:
-        return "Light Summer"
-    if cool and soft:
-        return "Soft Summer"
-    if cool and bright:
-        return "True Summer"
-
-    # 🍂 AUTUMN
-    if warm and deep and soft:
-        return "Soft Autumn"
-    if warm and deep and contrast < 60:
-        return "Muted Autumn"
-    if warm and deep:
-        return "Deep Autumn"
-    if warm:
-        return "True Autumn"
-
-    # ❄️ WINTER
-    if cool and bright and contrast > 70:
-        return "Bright Winter"
-    if cool and deep:
-        return "Deep Winter"
-    if cool:
-        return "True Winter"
-
-    return "Soft Autumn"
-
-
 def analyze_image(file):
 
     img = Image.open(file).convert("RGB")
@@ -61,21 +16,62 @@ def analyze_image(file):
     brightness = np.mean([r,g,b])
     contrast = np.std(pixels)
 
-    season = classify_season(r,g,b,brightness,contrast)
+    warm = r > b
+    cool = b > r
+    high_contrast = contrast > 55
+    low_contrast = contrast < 40
+    bright = brightness > 170
+    deep = brightness < 120
+
+    # 🌸 SPRING
+    if warm and bright and high_contrast:
+        season = "Bright Spring"
+    elif warm and bright:
+        season = "Light Spring"
+    elif warm and low_contrast:
+        season = "Soft Spring"
+    elif warm:
+        season = "Warm Spring"
+
+    # ☀️ SUMMER
+    elif cool and bright:
+        season = "Light Summer"
+    elif cool and low_contrast:
+        season = "Soft Summer"
+    elif cool and high_contrast:
+        season = "True Summer"
+
+    # 🍂 AUTUMN
+    elif warm and deep and low_contrast:
+        season = "Soft Autumn"
+    elif warm and deep and high_contrast:
+        season = "Deep Autumn"
+    elif warm and deep:
+        season = "True Autumn"
+    elif warm:
+        season = "Muted Autumn"
+
+    # ❄️ WINTER
+    elif cool and bright and high_contrast:
+        season = "Bright Winter"
+    elif cool and deep and low_contrast:
+        season = "Deep Winter"
+    elif cool and deep:
+        season = "True Winter"
+    else:
+        season = "Cool Winter"
 
     return {
-        "undertone": "Warm" if r > b else "Cool",
+        "undertone": "Warm" if warm else "Cool",
         "season": season,
-        "contrast": "Low" if contrast < 45 else "High",
-
+        "contrast": "Low" if low_contrast else "High",
         "palette": generate_palette(season),
 
         "recommend": {
-            "formal": "Structured elegant tones matching your season",
-            "casual": "Soft natural seasonal colors"
+            "formal": "Season-matched structured outfits",
+            "casual": "Soft coordinated natural tones"
         },
 
-        "avoid": "Avoid clashing undertone + neon colors",
-
-        "grooming": "Hair tones should align with undertone harmony"
+        "avoid": "Avoid clashing undertone + neon shades",
+        "grooming": "Match hair tones with undertone harmony"
     }
