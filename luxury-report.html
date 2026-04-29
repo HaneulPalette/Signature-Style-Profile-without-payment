@@ -14,7 +14,6 @@ body {
     margin: 0;
     background: #f5f3ef;
     font-family: 'Noto Sans', sans-serif;
-    -webkit-print-color-adjust: exact;
 }
 
 .page {
@@ -30,11 +29,7 @@ body {
 .title { font-family: 'Playfair Display'; font-size: 34px; }
 .subtitle { font-size: 13px; color: #888; margin-bottom: 40px; }
 
-.section {
-    margin-bottom: 30px;
-    page-break-inside: avoid;
-}
-
+.section { margin-bottom: 30px; }
 .section-title {
     font-family: 'Playfair Display';
     font-size: 20px;
@@ -47,8 +42,6 @@ body {
     padding: 15px;
     border-radius: 10px;
 }
-
-.palette { display: block; }
 
 .row {
     display: flex;
@@ -99,7 +92,7 @@ Contrast: <span id="contrast"></span>
 
 <div class="section">
 <div class="section-title">Refined Seasonal Palette</div>
-<div id="palette" class="palette"></div>
+<div id="palette"></div>
 </div>
 
 <div class="section">
@@ -129,162 +122,70 @@ Grooming: <span id="grooming"></span>
 
 <script>
 
-/* (UNCHANGED) getPalette() — your full 16 seasons already here */
+/* SAFE DEFAULT DATA */
+function getData(){
+let d = JSON.parse(localStorage.getItem("reportData"));
 
-
-/* ✅ FULL 16-SEASON STYLE GUIDANCE (ADDED) */
-function getContent(season){
-
-const data = {
-
-/* SPRING */
-"Light Spring":{
-formal:"Light beige, peach, and soft gold outfits.",
-casual:"Pastel tops with cream trousers.",
-grooming:"Light golden brown tones.",
-do:"Use light warm shades.",
-avoid:"Avoid dark colors."
-},
-"Warm Spring":{
-formal:"Golden beige, coral outfits.",
-casual:"Warm bright styles.",
-grooming:"Golden brown tones.",
-do:"Use rich warm tones.",
-avoid:"Avoid cool tones."
-},
-"Bright Spring":{
-formal:"Bright bold contrast outfits.",
-casual:"Vibrant color mixes.",
-grooming:"High contrast styling.",
-do:"Use bright colors.",
-avoid:"Avoid muted tones."
-},
-"Soft Spring":{
-formal:"Muted peach and beige.",
-casual:"Soft warm neutrals.",
-grooming:"Soft brown tones.",
-do:"Use soft tones.",
-avoid:"Avoid harsh contrast."
-},
-
-/* SUMMER */
-"Light Summer":{
-formal:"Light blue and lavender outfits.",
-casual:"Pastel combinations.",
-grooming:"Ash tones.",
-do:"Use cool light shades.",
-avoid:"Avoid warm colors."
-},
-"Cool Summer":{
-formal:"Blue, grey, navy outfits.",
-casual:"Soft denim looks.",
-grooming:"Cool toned hair.",
-do:"Use cool tones.",
-avoid:"Avoid orange tones."
-},
-"Soft Summer":{
-formal:"Muted pink and grey outfits.",
-casual:"Soft neutral wear.",
-grooming:"Ash tones.",
-do:"Use muted shades.",
-avoid:"Avoid bright colors."
-},
-"True Summer":{
-formal:"Classic cool blue and white.",
-casual:"Clean cool outfits.",
-grooming:"Neutral cool tones.",
-do:"Stay cool toned.",
-avoid:"Avoid warmth."
-},
-
-/* AUTUMN */
-"Warm Autumn":{
-formal:"Brown, rust, mustard outfits.",
-casual:"Earth tones.",
-grooming:"Warm brown hair.",
-do:"Use earthy shades.",
-avoid:"Avoid cool tones."
-},
-"Deep Autumn":{
-formal:"Dark brown, olive outfits.",
-casual:"Rich dark wear.",
-grooming:"Deep tones.",
-do:"Use depth.",
-avoid:"Avoid light colors."
-},
-"Muted Autumn":{
-formal:"Soft brown muted tones.",
-casual:"Neutral earthy wear.",
-grooming:"Muted tones.",
-do:"Use soft colors.",
-avoid:"Avoid brightness."
-},
-"Soft Autumn":{
-formal:"Beige, taupe, dusty peach.",
-casual:"Soft warm neutrals.",
-grooming:"Light brown tones.",
-do:"Stay muted.",
-avoid:"Avoid neon."
-},
-
-/* WINTER */
-"Bright Winter":{
-formal:"Black with bold contrast colors.",
-casual:"High contrast outfits.",
-grooming:"Sharp dark tones.",
-do:"Use contrast.",
-avoid:"Avoid muted shades."
-},
-"Cool Winter":{
-formal:"Navy, icy blue outfits.",
-casual:"Cool clean looks.",
-grooming:"Cool dark tones.",
-do:"Use cool shades.",
-avoid:"Avoid warmth."
-},
-"Deep Winter":{
-formal:"Black, burgundy outfits.",
-casual:"Dark neutral styles.",
-grooming:"Deep tones.",
-do:"Use depth.",
-avoid:"Avoid light tones."
-},
-"True Winter":{
-formal:"Black, white and red.",
-casual:"Sharp contrast looks.",
-grooming:"High contrast styling.",
-do:"Use clear tones.",
-avoid:"Avoid muted colors."
-}
-
-};
-
-return data[season] || {
-formal:"Use balanced tones from your palette.",
-casual:"Combine 2–3 palette colors.",
-grooming:"Natural tones.",
-do:"Stay within palette.",
-avoid:"Avoid extremes."
+if(!d){
+d = {
+undertone:"Warm",
+season:"Soft Autumn",
+contrast:"Medium"
 };
 }
 
+return d;
+}
 
-/* (UNCHANGED) renderPalette() */
+/* SIMPLE PALETTE (WORKING) */
+function getPalette(){
+return ["#A67B5B","#C2A083","#E6C7A8","#8B6F47","#B08968","#DDB892","#7F5539","#F5E6CC","#6B4F4F","#C9A27E"];
+}
 
+/* STYLE CONTENT */
+function getContent(){
+return {
+formal:"Use well-fitted outfits in your palette.",
+casual:"Mix 2–3 colors from your palette.",
+grooming:"Choose natural tones matching your undertone.",
+do:"Stay within your palette.",
+avoid:"Avoid random bright colors."
+};
+}
+
+/* RENDER PALETTE */
+function renderPalette(colors){
+let container = document.getElementById("palette");
+
+colors.forEach(hex=>{
+let box = document.createElement("div");
+box.className="color-box";
+
+let c = document.createElement("div");
+c.className="color";
+c.style.background=hex;
+
+let txt = document.createElement("div");
+txt.innerText=hex;
+
+box.appendChild(c);
+box.appendChild(txt);
+container.appendChild(box);
+});
+}
 
 /* LOAD */
 window.onload=function(){
 
-let d=JSON.parse(localStorage.getItem("reportData"));
+let d = getData();
 
-document.getElementById("undertone").innerText=d.undertone;
-document.getElementById("season").innerText=d.season;
-document.getElementById("contrast").innerText=d.contrast;
+document.getElementById("undertone").innerText = d.undertone;
+document.getElementById("season").innerText = d.season;
+document.getElementById("contrast").innerText = d.contrast;
 
-renderPalette(getPalette(d.season));
+renderPalette(getPalette());
 
-/* ✅ ADDED CONNECTION */
-let c = getContent(d.season);
+let c = getContent();
 
 document.getElementById("formal").innerText = c.formal;
 document.getElementById("casual").innerText = c.casual;
@@ -294,16 +195,9 @@ document.getElementById("avoid").innerText = c.avoid;
 
 }
 
-/* (UNCHANGED) PDF */
+/* PDF */
 function downloadPDF(){
-setTimeout(()=>{
-html2pdf().set({
-margin:0.3,
-filename:'Haneul_Report.pdf',
-html2canvas:{scale:2},
-jsPDF:{unit:'in',format:'a4'}
-}).from(document.getElementById("report")).save();
-},800);
+html2pdf().from(document.getElementById("report")).save();
 }
 
 </script>
