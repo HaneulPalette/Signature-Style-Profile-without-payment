@@ -22,6 +22,7 @@ async function analyze() {
 }
 
 function openReport() {
-    localStorage.setItem("report", JSON.stringify(data));
+
+    localStorage.setItem("reportData", JSON.stringify(data));
     window.open("luxury-report.html");
 }
