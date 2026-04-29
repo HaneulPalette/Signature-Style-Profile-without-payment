@@ -18,14 +18,12 @@
 <button onclick="analyze()">Analyze</button>
 
 <div id="preview" style="display:none">
-
 <h3>Preview</h3>
 <p>Undertone: <span id="p1"></span></p>
 <p>Season: <span id="p2"></span></p>
 <p>Contrast: <span id="p3"></span></p>
 
 <button onclick="openReport()">View Full Report</button>
-
 </div>
 
 </div>
@@ -71,16 +69,16 @@ let undertone=r>b?"Warm":"Cool";
 
 let season;
 
-// improved mapping
+// 16-season logic (improved distribution)
 if(undertone==="Warm" && brightness>180 && contrast<60) season="Light Spring";
-else if(undertone==="Warm" && brightness>180) season="Bright Spring";
-else if(undertone==="Warm" && contrast>100) season="Warm Spring";
-else if(undertone==="Warm" && brightness<120) season="Deep Autumn";
+else if(undertone==="Warm" && brightness>170 && contrast>80) season="Bright Spring";
+else if(undertone==="Warm" && contrast>110) season="Warm Spring";
+else if(undertone==="Warm" && brightness<120 && contrast>80) season="Deep Autumn";
 else if(undertone==="Warm" && contrast<60) season="Soft Autumn";
 else season="Muted Autumn";
 
 if(undertone==="Cool" && brightness>180 && contrast<60) season="Light Summer";
-else if(undertone==="Cool" && brightness>180) season="Cool Summer";
+else if(undertone==="Cool" && brightness>170) season="Cool Summer";
 else if(undertone==="Cool" && contrast<60) season="Soft Summer";
 else if(undertone==="Cool" && contrast>120) season="Bright Winter";
 else if(undertone==="Cool" && brightness<120) season="Deep Winter";
@@ -97,20 +95,14 @@ document.getElementById("p2").innerText=result.season;
 document.getElementById("p3").innerText=result.contrast;
 
 document.getElementById("preview").style.display="block";
+
 };
 
 reader.readAsDataURL(file);
 }
 
 function openReport(){
-
-if(!result.season){
-alert("Analyze first");return;
-}
-
-localStorage.removeItem("reportData");
 localStorage.setItem("reportData",JSON.stringify(result));
-
 window.open("luxury-report.html","_blank");
 }
 
