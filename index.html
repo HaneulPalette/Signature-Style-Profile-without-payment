@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Haneul Palette</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <img src="logo.png" class="logo">
+
+    <h1>Signature Style Profile</h1>
+    <p>Upload your image to discover your visual harmony</p>
+
+    <input type="file" id="imageUpload" accept="image/*">
+
+    <button onclick="analyze()">Analyze</button>
+
+    <!-- 🔥 CURIOUSITY PREVIEW (ONLY 3 RESULTS) -->
+    <div id="preview" class="hidden">
+
+        <h2>✨ Your Hidden Style Signals</h2>
+
+        <div class="card">
+            <p><b>Undertone:</b> <span id="p1"></span></p>
+            <p><b>Season Type:</b> <span id="p2"></span></p>
+            <p><b>Contrast Level:</b> <span id="p3"></span></p>
+        </div>
+
+        <button onclick="openReport()">Unlock Full Signature Report</button>
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
