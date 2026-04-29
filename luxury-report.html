@@ -1,45 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>Haneul Palette Report</title>
 
+<link rel="stylesheet" href="style.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Noto+Sans:wght@300;400&display=swap" rel="stylesheet">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-<style>
-body{background:#f5f3ef;font-family:'Noto Sans';margin:0;}
-.page{width:850px;margin:auto;background:#fff;padding:50px;}
-
-.title{font-family:'Playfair Display';text-align:center;font-size:34px;margin-bottom:10px;}
-.subtitle{text-align:center;color:#888;margin-bottom:30px;}
-
-.section{margin-bottom:30px;}
-.section-title{
-font-family:'Playfair Display';
-font-size:18px;
-border-bottom:1px solid #eee;
-margin-bottom:10px;
-}
-
-.card{
-background:#fafafa;
-padding:18px;
-border-radius:10px;
-line-height:1.6;
-}
-
-.palette{
-display:grid;
-grid-template-columns:repeat(6,1fr);
-gap:12px;
-}
-
-.color-box{text-align:center;}
-.color{width:55px;height:55px;border-radius:8px;margin:auto;}
-.hex{font-size:11px;}
-.name{font-size:11px;color:#666;}
-</style>
 </head>
 
 <body>
@@ -93,6 +61,7 @@ gap:12px;
 
 <script>
 
+// 🔥 FULL 16-SEASON PALETTE SYSTEM
 function getPalette(season){
 
 const palettes = {
@@ -131,7 +100,7 @@ const palettes = {
 {hex:"#4169E1",name:"Royal Blue"},{hex:"#FF1493",name:"Deep Pink"},
 {hex:"#FF00FF",name:"Magenta"},{hex:"#FF6347",name:"Tomato"},
 {hex:"#ADFF2F",name:"Green Yellow"},{hex:"#32CD32",name:"Lime"},
-{hex:"#00FF00",name:"Pure Green"},{hex:"#20B2AA",name:"Teal"},
+{hex:"#00FF00",name:"Green"},{hex:"#20B2AA",name:"Teal"},
 {hex:"#00CED1",name:"Turquoise"},{hex:"#FFA07A",name:"Light Coral"},
 {hex:"#FF9966",name:"Peach"},{hex:"#FFE066",name:"Yellow"}
 ],
@@ -150,16 +119,16 @@ const palettes = {
 ],
 
 "Light Summer":[
-{hex:"#DCE6F1",name:"Powder Blue"},{hex:"#E3EDF7",name:"Sky Mist"},
-{hex:"#BFD7EA",name:"Light Blue"},{hex:"#C9D6DF",name:"Cool Gray"},
+{hex:"#DCE6F1",name:"Powder Blue"},{hex:"#BFD7EA",name:"Light Blue"},
 {hex:"#A9BCD0",name:"Dusty Blue"},{hex:"#EAF2F8",name:"Ice Blue"},
 {hex:"#D0E1F9",name:"Soft Sky"},{hex:"#B8C6D1",name:"Muted Steel"},
 {hex:"#E5ECF4",name:"Pale Blue"},{hex:"#C3D3E3",name:"Denim"},
 {hex:"#F8F9F9",name:"White"},{hex:"#ECF0F1",name:"Light Gray"},
 {hex:"#D7DBDD",name:"Silver"},{hex:"#BDC3C7",name:"Gray"},
-{hex:"#ABB2B9",name:"Steel"},{hex:"#85929E",name:"Cool Gray"},
-{hex:"#5D6D7E",name:"Slate"},{hex:"#AEB6BF",name:"Cloud Gray"},
-{hex:"#AED6F1",name:"Sky Blue"},{hex:"#85C1E9",name:"Aqua"}
+{hex:"#85929E",name:"Cool Gray"},{hex:"#5D6D7E",name:"Slate"},
+{hex:"#AEB6BF",name:"Cloud Gray"},{hex:"#AED6F1",name:"Sky Blue"},
+{hex:"#85C1E9",name:"Aqua"},{hex:"#D6EAF8",name:"Light Blue"},
+{hex:"#EBF5FB",name:"Ice Blue"},{hex:"#F4F6F7",name:"Cool White"}
 ],
 
 "Cool Summer":[
@@ -275,8 +244,8 @@ const palettes = {
 {hex:"#483D8B",name:"Dark Slate Blue"},{hex:"#191970",name:"Midnight Blue"},
 {hex:"#000080",name:"Navy"},{hex:"#00008B",name:"Dark Blue"},
 {hex:"#0000CD",name:"Medium Blue"},{hex:"#0000FF",name:"Blue"},
-{hex:"#1E90FF",name:"Dodger Blue"},{hex:"#00BFFF",name:"Sky Blue"},
-{hex:"#87CEFA",name:"Light Sky Blue"},{hex:"#ADD8E6",name:"Light Blue"}
+{hex:"#87CEFA",name:"Light Sky Blue"},{hex:"#ADD8E6",name:"Light Blue"},
+{hex:"#B0C4DE",name:"Light Steel Blue"},{hex:"#E6E6FA",name:"Lavender"}
 ],
 
 "Deep Winter":[
@@ -310,19 +279,22 @@ const palettes = {
 return palettes[season];
 }
 
+// TEXT CONTENT
 function getContent(season,undertone,contrast){
 return {
 analysis:`You have a ${undertone} undertone with ${contrast} contrast placing you in ${season}.`,
 formal:`Use structured outfits with balanced tones from your palette.`,
 casual:`Combine 2–3 harmonious shades.`,
-grooming:`${undertone==="Warm"?"Golden/caramel":"Ash/cool"} tones suit best.`,
+grooming:`${undertone==="Warm"?"Golden / caramel tones":"Ash / cool tones"} suit you best.`,
 do:`Stay within your palette.`,
 avoid:`Avoid opposite undertone colors.`
 };
 }
 
+// LOAD DATA
 function loadReport(){
-let d=JSON.parse(localStorage.getItem("reportData"));
+
+let d = JSON.parse(localStorage.getItem("reportData"));
 
 document.getElementById("undertone").innerText=d.undertone;
 document.getElementById("season").innerText=d.season;
@@ -337,24 +309,25 @@ document.getElementById("grooming").innerText=c.grooming;
 document.getElementById("do").innerText=c.do;
 document.getElementById("avoid").innerText=c.avoid;
 
+// palette render
 let box=document.getElementById("palette");
 box.innerHTML="";
 
-getPalette(d.season).forEach(c=>{
+getPalette(d.season).forEach(col=>{
 let wrap=document.createElement("div");
 wrap.className="color-box";
 
 let div=document.createElement("div");
 div.className="color";
-div.style.background=c.hex;
+div.style.background=col.hex;
 
 let hex=document.createElement("div");
 hex.className="hex";
-hex.innerText=c.hex;
+hex.innerText=col.hex;
 
 let name=document.createElement("div");
 name.className="name";
-name.innerText=c.name;
+name.innerText=col.name;
 
 wrap.appendChild(div);
 wrap.appendChild(hex);
@@ -362,8 +335,10 @@ wrap.appendChild(name);
 
 box.appendChild(wrap);
 });
+
 }
 
+// PDF
 function downloadPDF(){
 html2pdf().from(document.getElementById("report")).save("Haneul_Report.pdf");
 }
