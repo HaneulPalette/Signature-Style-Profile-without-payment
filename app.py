@@ -2,16 +2,14 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# simple CORS fix (no install needed)
 @app.after_request
-def add_headers(response):
+def cors(response):
     response.headers["Access-Control-Allow-Origin"] = "*"
     return response
 
 
 @app.route("/analyze", methods=["POST"])
 def analyze():
-
     file = request.files["image"]
 
     from analysis import analyze_image
@@ -20,4 +18,5 @@ def analyze():
     return jsonify(result)
 
 
-app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
