@@ -36,90 +36,85 @@
 
 let result = {};
 
-// 🔥 ANALYZE IMAGE
 function analyze(){
 
-    let file = document.getElementById("img").files[0];
+let file = document.getElementById("img").files[0];
+if(!file){ alert("Upload image"); return; }
 
-    if(!file){
-        alert("Upload image first");
-        return;
-    }
+let img = new Image();
+let reader = new FileReader();
 
-    let img = new Image();
-    let reader = new FileReader();
+reader.onload = e => img.src = e.target.result;
 
-    reader.onload = e => img.src = e.target.result;
+img.onload = function(){
 
-    img.onload = function(){
+let canvas=document.createElement("canvas");
+let ctx=canvas.getContext("2d");
 
-        let canvas = document.createElement("canvas");
-        let ctx = canvas.getContext("2d");
+canvas.width=100;
+canvas.height=100;
 
-        canvas.width = 100;
-        canvas.height = 100;
+ctx.drawImage(img,0,0,100,100);
 
-        ctx.drawImage(img,0,0,100,100);
+let data=ctx.getImageData(0,0,100,100).data;
 
-        let data = ctx.getImageData(0,0,100,100).data;
+let r=0,g=0,b=0,count=0;
 
-        let r=0,g=0,b=0,count=0;
-
-        for(let i=0;i<data.length;i+=4){
-            r+=data[i];
-            g+=data[i+1];
-            b+=data[i+2];
-            count++;
-        }
-
-        r/=count; g/=count; b/=count;
-
-        let brightness=(r+g+b)/3;
-        let contrast = Math.abs(r-g)+Math.abs(g-b);
-
-        let undertone = r>b ? "Warm":"Cool";
-
-        let season;
-
-        if(undertone==="Warm" && brightness>180) season="Light Spring";
-        else if(undertone==="Warm" && contrast>80) season="Bright Spring";
-        else if(undertone==="Warm" && brightness<120) season="Deep Autumn";
-        else if(undertone==="Warm") season="Soft Autumn";
-
-        else if(undertone==="Cool" && brightness>180) season="Light Summer";
-        else if(undertone==="Cool" && contrast>80) season="Bright Winter";
-        else if(undertone==="Cool" && brightness<120) season="Deep Winter";
-        else season="Soft Summer";
-
-        result = {
-            undertone: undertone,
-            season: season,
-            contrast: contrast>80 ? "High" : "Low"
-        };
-
-        document.getElementById("p1").innerText=result.undertone;
-        document.getElementById("p2").innerText=result.season;
-        document.getElementById("p3").innerText=result.contrast;
-
-        document.getElementById("preview").style.display="block";
-    };
-
-    reader.readAsDataURL(file);
+for(let i=0;i<data.length;i+=4){
+r+=data[i]; g+=data[i+1]; b+=data[i+2]; count++;
 }
 
+r/=count; g/=count; b/=count;
 
-// 🔥 FIXED DATA FLOW
+let brightness=(r+g+b)/3;
+let contrast=Math.abs(r-g)+Math.abs(g-b);
+
+let undertone = r>b ? "Warm":"Cool";
+
+let season;
+
+// 16-season simplified mapping
+if(undertone==="Warm" && brightness>180 && contrast<60) season="Light Spring";
+else if(undertone==="Warm" && brightness>180) season="Bright Spring";
+else if(undertone==="Warm" && contrast>100) season="Warm Spring";
+else if(undertone==="Warm" && brightness<120) season="Deep Autumn";
+else if(undertone==="Warm") season="Soft Autumn";
+
+else if(undertone==="Cool" && brightness>180 && contrast<60) season="Light Summer";
+else if(undertone==="Cool" && brightness>180) season="Cool Summer";
+else if(undertone==="Cool" && contrast<60) season="Soft Summer";
+else if(undertone==="Cool" && contrast>120) season="Bright Winter";
+else if(undertone==="Cool" && brightness<120) season="Deep Winter";
+else season="True Winter";
+
+result = {
+undertone: undertone,
+season: season,
+contrast: contrast>80 ? "High":"Low"
+};
+
+document.getElementById("p1").innerText=result.undertone;
+document.getElementById("p2").innerText=result.season;
+document.getElementById("p3").innerText=result.contrast;
+
+document.getElementById("preview").style.display="block";
+
+};
+
+reader.readAsDataURL(file);
+}
+
 function openReport(){
 
-    if(!result.season){
-        alert("Please analyze first");
-        return;
-    }
+if(!result.season){
+alert("Analyze first");
+return;
+}
 
-    localStorage.removeItem("reportData"); // clear old
-    localStorage.setItem("reportData", JSON.stringify(result));
+localStorage.removeItem("reportData");
+localStorage.setItem("reportData", JSON.stringify(result));
 
-    window.open("luxury-report.html","_blank");
+window.open("luxury-report.html","_blank");
 }
 
 </script>
