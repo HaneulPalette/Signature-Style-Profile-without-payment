@@ -5,15 +5,12 @@
 <title>Haneul Palette Luxury Report</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Noto+Sans:wght@300;400&display=swap" rel="stylesheet">
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
 
 /* GLOBAL FIX */
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
     margin: 0;
@@ -22,35 +19,20 @@ body {
     -webkit-print-color-adjust: exact;
 }
 
-/* A4 SAFE PAGE */
+/* A4 PERFECT SIZE */
 .page {
     width: 794px;
     min-height: 1123px;
     margin: auto;
-    background: #ffffff;
+    background: #fff;
     padding: 60px 50px;
 }
 
 /* HEADER */
-.header {
-    text-align: center;
-}
-
-.logo {
-    width: 80px;
-    margin-bottom: 10px;
-}
-
-.title {
-    font-family: 'Playfair Display', serif;
-    font-size: 34px;
-}
-
-.subtitle {
-    font-size: 13px;
-    color: #888;
-    margin-bottom: 40px;
-}
+.header { text-align: center; }
+.logo { width: 80px; margin-bottom: 10px; }
+.title { font-family: 'Playfair Display'; font-size: 34px; }
+.subtitle { font-size: 13px; color: #888; margin-bottom: 40px; }
 
 /* SECTIONS */
 .section {
@@ -59,9 +41,9 @@ body {
 }
 
 .section-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Playfair Display';
     font-size: 20px;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #ddd;
     margin-bottom: 10px;
 }
 
@@ -71,19 +53,21 @@ body {
     border-radius: 10px;
 }
 
-/* PALETTE FIX (PDF SAFE) */
+/* PERFECT PDF SAFE PALETTE */
 .palette {
+    display: block;
+}
+
+.row {
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
+    margin-bottom: 12px;
 }
 
 .color-box {
     width: 18%;
-    margin-bottom: 15px;
     text-align: center;
     font-size: 11px;
-    page-break-inside: avoid;
 }
 
 .color {
@@ -131,9 +115,9 @@ Contrast: <span id="contrast"></span>
 <div class="section">
 <div class="section-title">Style Guidance</div>
 <div class="card">
-<b>Formal:</b> <span id="formal"></span><br><br>
-<b>Casual:</b> <span id="casual"></span><br><br>
-<b>Grooming:</b> <span id="grooming"></span>
+Formal: <span id="formal"></span><br><br>
+Casual: <span id="casual"></span><br><br>
+Grooming: <span id="grooming"></span>
 </div>
 </div>
 
@@ -145,9 +129,7 @@ Contrast: <span id="contrast"></span>
 </div>
 </div>
 
-<div class="footer">
-© Haneul Palette
-</div>
+<div class="footer">© Haneul Palette</div>
 
 </div>
 
@@ -157,39 +139,64 @@ Contrast: <span id="contrast"></span>
 
 <script>
 
-/* ================= 16 SEASONS ================= */
+/* ✅ FULL 16 SEASONS */
 function getPalette(season){
-const p={
+
+const palettes = {
+
+/* SPRING */
+"Light Spring":["#FFF4CC","#FFE4B5","#FFDAB9","#FFFACD","#FFE066","#FFD700","#FFB347","#FFA07A","#FF7F50","#FFD1DC","#E6E6FA","#E0FFFF","#AFEEEE","#ADD8E6","#90EE90","#98FB98","#F5FFFA","#FFFFE0","#F0FFF0","#FFF8DC"],
+
+"Warm Spring":["#FFAA33","#FFCC66","#FF9966","#FFD27F","#FFB84D","#F4C542","#E3A857","#FF9F1C","#FF7F50","#FF6347","#FF8C00","#FFA500","#FFD700","#FFDEAD","#F5DEB3","#DEB887","#D2691E","#B5651D","#A0522D","#8B4513"],
+
+"Bright Spring":["#FF5A36","#FFD700","#00FA9A","#FF69B4","#FF4500","#7FFF00","#00FFFF","#1E90FF","#4169E1","#FF1493","#FF00FF","#FF6347","#ADFF2F","#32CD32","#00FF00","#20B2AA","#00CED1","#FFA07A","#FF9966","#FFE066"],
+
+"Soft Spring":["#FAD7A0","#F5CBA7","#F8C471","#E59866","#F7DC6F","#F9E79F","#FDEBD0","#F5B7B1","#FADBD8","#FCF3CF","#D5F5E3","#A9DFBF","#7DCEA0","#82E0AA","#ABEBC6","#D4EFDF","#E8F8F5","#D6EAF8","#AED6F1","#85C1E9"],
+
+/* SUMMER */
+"Light Summer":["#DCE6F1","#BFD7EA","#A9BCD0","#EAF2F8","#D0E1F9","#B8C6D1","#E5ECF4","#C3D3E3","#F8F9F9","#ECF0F1","#D7DBDD","#BDC3C7","#85929E","#5D6D7E","#AEB6BF","#AED6F1","#85C1E9","#D6EAF8","#EBF5FB","#F4F6F7"],
+
+"Cool Summer":["#6FA3EF","#A7C7E7","#C3D9F1","#8BB8D4","#B0D0E8","#D0E4F5","#7A9CC6","#5F7FA3","#6C7A89","#95A5A6","#BDC3C7","#D5DBDB","#EBF5FB","#F4F6F7","#AED6F1","#85C1E9","#5DADE2","#3498DB","#2E86C1","#1B4F72"],
+
+"Soft Summer":["#A8B5C0","#C3CED6","#E0E6EB","#8FA3B0","#B0C4CF","#D6DEE3","#7C8B97","#F2F4F6","#6D7C88","#9FB3C1","#BFD7EA","#C9D6DF","#A9BCD0","#D0E1F9","#B8C6D1","#E5ECF4","#C3D3E3","#ECF0F1","#D7DBDD","#ABB2B9"],
+
+"True Summer":["#7FB3D5","#A9CCE3","#D4E6F1","#85C1E9","#AED6F1","#EBF5FB","#5DADE2","#3498DB","#2E86C1","#1B4F72","#154360","#6C7A89","#95A5A6","#BDC3C7","#D5DBDB","#EBF5FB","#AED6F1","#85C1E9","#5DADE2","#3498DB"],
+
+/* AUTUMN */
+"Warm Autumn":["#8B4000","#A0522D","#CD853F","#D2691E","#B5651D","#7B3F00","#8B5A2B","#C68642","#D2B48C","#F4A460","#DEB887","#B87333","#FF8C00","#FFA500","#FF7F50","#FFD700","#FFDEAD","#F5DEB3","#D2691E","#A0522D"],
+
+"Deep Autumn":["#3B2F2F","#5C4033","#6B4423","#8B5E3C","#A0522D","#4E342E","#3E2723","#7B3F00","#6E260E","#2F1B0C","#4B2E05","#8B0000","#800000","#4B0082","#2F4F4F","#003333","#004225","#013220","#556B2F","#6B8E23"],
+
+"Muted Autumn":["#A38F85","#B7A99A","#C9B8A8","#8C7B75","#B5A69A","#D2C1B0","#7E6C63","#E3D5C9","#6F5F57","#A4948A","#BFA6A0","#D8C3A5","#C1A57B","#EADBC8","#F5EFE6","#A1887F","#8D6E63","#6D4C41","#5D4037","#4E342E"],
+
 "Soft Autumn":["#A67B5B","#C2A083","#E6C7A8","#8B6F47","#B08968","#DDB892","#7F5539","#F5E6CC","#6B4F4F","#C9A27E","#A98467","#D6CCC2","#CB997E","#EDDCD2","#B7B7A4","#A5A58D","#6B705C","#B5838D","#9C6644","#FFE8D6"],
-"Cool Summer":["#6FA3EF","#A7C7E7","#C3D9F1","#8BB8D4","#B0D0E8","#D0E4F5","#7A9CC6","#5F7FA3","#6C7A89","#95A5A6","#BDC3C7","#D5DBDB","#EBF5FB","#F4F6F7","#AED6F1","#85C1E9","#5DADE2","#3498DB","#2E86C1","#1B4F72"]
+
+/* WINTER */
+"Bright Winter":["#FFFFFF","#000000","#FF0000","#0000FF","#00FF00","#FF00FF","#00FFFF","#DC143C","#1E90FF","#7FFF00","#8A2BE2","#9400D3","#4B0082","#000080","#191970","#FF1493","#FF69B4","#FF4500","#FF6347","#FFD700"],
+
+"Cool Winter":["#0A0A0A","#FFFFFF","#1E90FF","#4682B4","#7B68EE","#8A2BE2","#4169E1","#00BFFF","#2F4F4F","#708090","#483D8B","#191970","#000080","#00008B","#0000CD","#0000FF","#87CEFA","#ADD8E6","#B0C4DE","#E6E6FA"],
+
+"Deep Winter":["#000000","#1A1A1A","#2B2B2B","#3C3C3C","#4D4D4D","#660000","#003366","#000080","#2E0854","#191970","#4B0082","#2F4F4F","#003333","#004225","#013220","#556B2F","#6B8E23","#808000","#8B0000","#800000"],
+
+"True Winter":["#000000","#FFFFFF","#FF0000","#0000FF","#00FF00","#FF00FF","#00FFFF","#8B0000","#000080","#191970","#4B0082","#2F4F4F","#003333","#004225","#013220","#556B2F","#6B8E23","#808000","#8B0000","#800000"]
+
 };
-return p[season] || p["Soft Autumn"];
+
+return palettes[season];
 }
 
-/* ================= CONTENT ================= */
-function getContent(season){
-return {
-formal:"Tailored outfits using your seasonal palette.",
-casual:"Combine 2–3 palette colors.",
-grooming:"Hair/beard tones aligned with undertone.",
-do:"Stay within your palette.",
-avoid:"Avoid opposite season tones."
-};
-}
+/* RENDER PALETTE IN PERFECT ROWS */
+function renderPalette(colors){
 
-/* ================= LOAD ================= */
-window.onload=function(){
+let container=document.getElementById("palette");
+container.innerHTML="";
 
-let d=JSON.parse(localStorage.getItem("reportData"));
+for(let i=0;i<colors.length;i+=5){
 
-document.getElementById("undertone").innerText=d.undertone;
-document.getElementById("season").innerText=d.season;
-document.getElementById("contrast").innerText=d.contrast;
+let row=document.createElement("div");
+row.className="row";
 
-/* Palette */
-let paletteBox=document.getElementById("palette");
-
-getPalette(d.season).forEach(hex=>{
+colors.slice(i,i+5).forEach(hex=>{
 let box=document.createElement("div");
 box.className="color-box";
 
@@ -202,39 +209,37 @@ txt.innerText=hex;
 
 box.appendChild(c);
 box.appendChild(txt);
-paletteBox.appendChild(box);
+row.appendChild(box);
 });
 
-/* Content */
-let c=getContent(d.season);
+container.appendChild(row);
+}
 
-document.getElementById("formal").innerText=c.formal;
-document.getElementById("casual").innerText=c.casual;
-document.getElementById("grooming").innerText=c.grooming;
-document.getElementById("do").innerText=c.do;
-document.getElementById("avoid").innerText=c.avoid;
+}
 
-};
+/* LOAD */
+window.onload=function(){
 
-/* ================= PDF FIX ================= */
+let d=JSON.parse(localStorage.getItem("reportData"));
+
+document.getElementById("undertone").innerText=d.undertone;
+document.getElementById("season").innerText=d.season;
+document.getElementById("contrast").innerText=d.contrast;
+
+renderPalette(getPalette(d.season));
+
+}
+
+/* PDF PERFECT FIX */
 function downloadPDF(){
-
-setTimeout(() => {
-
-const element = document.getElementById("report");
-
+setTimeout(()=>{
 html2pdf().set({
-    margin: 0.3,
-    filename: 'Haneul_Palette_Report.pdf',
-    image: { type: 'jpeg', quality: 1 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-})
-.from(element)
-.save();
-
-}, 500);
-
+margin:0.3,
+filename:'Haneul_Report.pdf',
+html2canvas:{scale:2},
+jsPDF:{unit:'in',format:'a4'}
+}).from(document.getElementById("report")).save();
+},800);
 }
 
 </script>
