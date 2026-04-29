@@ -10,7 +10,7 @@ def classify_season(r, g, b, brightness, contrast):
     soft = contrast < 45
     deep = brightness < 120
 
-    # SPRING
+    # 🌸 SPRING
     if warm and bright:
         return "Bright Spring"
     if warm and soft:
@@ -18,7 +18,7 @@ def classify_season(r, g, b, brightness, contrast):
     if warm:
         return "Warm Spring"
 
-    # SUMMER
+    # ☀️ SUMMER
     if cool and soft and bright:
         return "Light Summer"
     if cool and soft:
@@ -26,7 +26,7 @@ def classify_season(r, g, b, brightness, contrast):
     if cool:
         return "True Summer"
 
-    # AUTUMN
+    # 🍂 AUTUMN
     if warm and deep and soft:
         return "Soft Autumn"
     if warm and deep:
@@ -34,7 +34,7 @@ def classify_season(r, g, b, brightness, contrast):
     if warm:
         return "True Autumn"
 
-    # WINTER
+    # ❄️ WINTER
     if cool and bright:
         return "Bright Winter"
     if cool and deep:
@@ -48,33 +48,40 @@ def classify_season(r, g, b, brightness, contrast):
 def analyze_image(file):
 
     image = Image.open(file).convert("RGB")
-    image = image.resize((150,150))
+    image = image.resize((150, 150))
 
-    pixels = np.array(image).reshape(-1,3)
+    pixels = np.array(image).reshape(-1, 3)
 
-    r = np.mean(pixels[:,0])
-    g = np.mean(pixels[:,1])
-    b = np.mean(pixels[:,2])
+    r = np.mean(pixels[:, 0])
+    g = np.mean(pixels[:, 1])
+    b = np.mean(pixels[:, 2])
 
-    brightness = np.mean([r,g,b])
+    brightness = np.mean([r, g, b])
     contrast = np.std(pixels)
 
-    season = classify_season(r,g,b,brightness,contrast)
+    season = classify_season(r, g, b, brightness, contrast)
 
-    # FIXED OUTPUT STRUCTURE
+    undertone = "Warm" if r > b else "Cool"
+
+    contrast_level = (
+        "Low" if contrast < 40 else
+        "Medium" if contrast < 70 else
+        "High"
+    )
+
     return {
-        "undertone": "Warm" if r > b else "Cool",
+        "undertone": undertone,
         "season": season,
-        "contrast": "Low" if contrast < 40 else "Medium" if contrast < 70 else "High",
+        "contrast": contrast_level,
 
         "palette": generate_palette(season),
 
         "recommend": {
             "formal": "Muted structured tones, elegant neutrals",
-            "casual": "Soft fabrics in season colors"
+            "casual": "Soft natural fabrics in seasonal tones"
         },
 
-        "avoid": "Avoid harsh neon or mismatched undertone colors",
+        "avoid": "Avoid clashing undertone colors and neon shades",
 
-        "grooming": "Hair tones should match undertone for harmony"
+        "grooming": "Hair + beard tones should match undertone harmony"
     }
