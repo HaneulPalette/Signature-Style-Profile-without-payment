@@ -1,26 +1,24 @@
-function loadReport() {
+<script>
+function load() {
 
-    let data = JSON.parse(localStorage.getItem("reportData"));
+    let d = JSON.parse(localStorage.getItem("report"));
 
-    document.getElementById("undertone").innerText = data.undertone;
-    document.getElementById("season").innerText = data.season;
-    document.getElementById("avoid").innerText = data.avoid;
-    document.getElementById("grooming").innerText = data.grooming;
+    document.getElementById("season").innerText = d.season;
+    document.getElementById("undertone").innerText = d.undertone;
 
-    let palette = document.getElementById("palette");
-    palette.innerHTML = "";
+    document.getElementById("recommend").innerText = d.recommend.formal;
 
-    data.palette.forEach(c => {
+    let box = document.getElementById("palette");
+
+    d.palette.forEach(c => {
         let div = document.createElement("div");
-        div.className = "color";
+        div.style.width = "50px";
+        div.style.height = "50px";
         div.style.background = c;
-        palette.appendChild(div);
+        div.style.display = "inline-block";
+        box.appendChild(div);
     });
 }
 
-window.onload = loadReport;
-
-function downloadPDF() {
-    html2pdf().from(document.getElementById("report"))
-    .save("Haneul_Report.pdf");
-}
+window.onload = load;
+</script>
