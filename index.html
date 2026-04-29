@@ -36,10 +36,15 @@
 
 let result = {};
 
+// 🔥 ANALYZE IMAGE
 function analyze(){
 
     let file = document.getElementById("img").files[0];
-    if(!file){ alert("Upload image"); return; }
+
+    if(!file){
+        alert("Upload image first");
+        return;
+    }
 
     let img = new Image();
     let reader = new FileReader();
@@ -61,7 +66,10 @@ function analyze(){
         let r=0,g=0,b=0,count=0;
 
         for(let i=0;i<data.length;i+=4){
-            r+=data[i]; g+=data[i+1]; b+=data[i+2]; count++;
+            r+=data[i];
+            g+=data[i+1];
+            b+=data[i+2];
+            count++;
         }
 
         r/=count; g/=count; b/=count;
@@ -73,7 +81,6 @@ function analyze(){
 
         let season;
 
-        // 16-season simplified logic
         if(undertone==="Warm" && brightness>180) season="Light Spring";
         else if(undertone==="Warm" && contrast>80) season="Bright Spring";
         else if(undertone==="Warm" && brightness<120) season="Deep Autumn";
@@ -84,11 +91,15 @@ function analyze(){
         else if(undertone==="Cool" && brightness<120) season="Deep Winter";
         else season="Soft Summer";
 
-        result = {undertone,season,contrast};
+        result = {
+            undertone: undertone,
+            season: season,
+            contrast: contrast>80 ? "High" : "Low"
+        };
 
-        document.getElementById("p1").innerText=undertone;
-        document.getElementById("p2").innerText=season;
-        document.getElementById("p3").innerText=contrast>80?"High":"Low";
+        document.getElementById("p1").innerText=result.undertone;
+        document.getElementById("p2").innerText=result.season;
+        document.getElementById("p3").innerText=result.contrast;
 
         document.getElementById("preview").style.display="block";
     };
@@ -96,9 +107,19 @@ function analyze(){
     reader.readAsDataURL(file);
 }
 
+
+// 🔥 FIXED DATA FLOW
 function openReport(){
+
+    if(!result.season){
+        alert("Please analyze first");
+        return;
+    }
+
+    localStorage.removeItem("reportData"); // clear old
     localStorage.setItem("reportData", JSON.stringify(result));
-    window.open("luxury-report.html");
+
+    window.open("luxury-report.html","_blank");
 }
 
 </script>
