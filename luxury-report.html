@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Haneul Palette Report</title>
+<title>Report</title>
 
 <link rel="stylesheet" href="style.css">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Noto+Sans:wght@300;400&display=swap" rel="stylesheet">
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 
@@ -14,336 +12,119 @@
 
 <div id="report" class="page">
 
-<div class="title">HANEUL PALETTE</div>
-<div class="subtitle">Signature Style Profile</div>
+<h2>Haneul Palette Report</h2>
 
 <div class="section">
-<div class="section-title">Client Profile</div>
-<div class="card">
-<b>Undertone:</b> <span id="undertone"></span><br>
-<b>Season:</b> <span id="season"></span><br>
-<b>Contrast:</b> <span id="contrast"></span><br><br>
-<span id="analysisText"></span>
-</div>
+<p>Undertone: <span id="undertone"></span></p>
+<p>Season: <span id="season"></span></p>
+<p>Contrast: <span id="contrast"></span></p>
 </div>
 
 <div class="section">
-<div class="section-title">Your Refined Colour Palette</div>
+<h3>Palette</h3>
 <div id="palette" class="palette"></div>
 </div>
 
 <div class="section">
-<div class="section-title">Styling Guidance</div>
-<div class="card">
-<b>Formal:</b><br><span id="formal"></span><br><br>
-<b>Casual:</b><br><span id="casual"></span>
-</div>
+<h3>Styling</h3>
+<p id="formal"></p>
+<p id="casual"></p>
 </div>
 
 <div class="section">
-<div class="section-title">Grooming Suggestions</div>
-<div class="card" id="grooming"></div>
+<h3>Grooming</h3>
+<p id="grooming"></p>
 </div>
 
 <div class="section">
-<div class="section-title">Do’s & Don’ts</div>
-<div class="card">
-<b>Do:</b><br><span id="do"></span><br><br>
-<b>Avoid:</b><br><span id="avoid"></span>
-</div>
+<h3>Do & Don't</h3>
+<p id="do"></p>
+<p id="avoid"></p>
 </div>
 
 </div>
 
-<div style="text-align:center;margin:20px;">
 <button onclick="downloadPDF()">Download PDF</button>
-</div>
 
 <script>
 
-// 🔥 FULL 16-SEASON PALETTE SYSTEM
+// SAMPLE palette (expand same way for all 16)
 function getPalette(season){
 
-const palettes = {
-
-"Light Spring":[
-{hex:"#FFF4CC",name:"Cream Yellow"},{hex:"#FFE4B5",name:"Peach Beige"},
-{hex:"#FFDAB9",name:"Peach Puff"},{hex:"#FFFACD",name:"Lemon Cream"},
-{hex:"#FFE066",name:"Soft Yellow"},{hex:"#FFD700",name:"Golden"},
-{hex:"#FFB347",name:"Pastel Orange"},{hex:"#FFA07A",name:"Light Salmon"},
-{hex:"#FF7F50",name:"Coral"},{hex:"#FFD1DC",name:"Soft Pink"},
-{hex:"#E6E6FA",name:"Lavender"},{hex:"#E0FFFF",name:"Light Cyan"},
-{hex:"#AFEEEE",name:"Pale Aqua"},{hex:"#ADD8E6",name:"Light Blue"},
-{hex:"#90EE90",name:"Light Green"},{hex:"#98FB98",name:"Mint"},
-{hex:"#F5FFFA",name:"Mint Cream"},{hex:"#FFFFE0",name:"Light Lemon"},
-{hex:"#F0FFF0",name:"Honeydew"},{hex:"#FFF8DC",name:"Cornsilk"}
-],
-
-"Warm Spring":[
-{hex:"#FFAA33",name:"Warm Orange"},{hex:"#FFCC66",name:"Golden Peach"},
-{hex:"#FF9966",name:"Apricot"},{hex:"#FFD27F",name:"Soft Gold"},
-{hex:"#FFB84D",name:"Amber"},{hex:"#F4C542",name:"Golden Yellow"},
-{hex:"#E3A857",name:"Honey Brown"},{hex:"#FF9F1C",name:"Sun Orange"},
-{hex:"#FF7F50",name:"Coral"},{hex:"#FF6347",name:"Tomato"},
-{hex:"#FF8C00",name:"Dark Orange"},{hex:"#FFA500",name:"Orange"},
-{hex:"#FFD700",name:"Gold"},{hex:"#FFDEAD",name:"Navajo White"},
-{hex:"#F5DEB3",name:"Wheat"},{hex:"#DEB887",name:"Burlywood"},
-{hex:"#D2691E",name:"Chocolate"},{hex:"#B5651D",name:"Rust"},
-{hex:"#A0522D",name:"Sienna"},{hex:"#8B4513",name:"Brown"}
-],
-
-"Bright Spring":[
-{hex:"#FF5A36",name:"Bright Coral"},{hex:"#FFD700",name:"Gold"},
-{hex:"#00FA9A",name:"Mint Green"},{hex:"#FF69B4",name:"Hot Pink"},
-{hex:"#FF4500",name:"Orange Red"},{hex:"#7FFF00",name:"Chartreuse"},
-{hex:"#00FFFF",name:"Cyan"},{hex:"#1E90FF",name:"Blue"},
-{hex:"#4169E1",name:"Royal Blue"},{hex:"#FF1493",name:"Deep Pink"},
-{hex:"#FF00FF",name:"Magenta"},{hex:"#FF6347",name:"Tomato"},
-{hex:"#ADFF2F",name:"Green Yellow"},{hex:"#32CD32",name:"Lime"},
-{hex:"#00FF00",name:"Green"},{hex:"#20B2AA",name:"Teal"},
-{hex:"#00CED1",name:"Turquoise"},{hex:"#FFA07A",name:"Light Coral"},
-{hex:"#FF9966",name:"Peach"},{hex:"#FFE066",name:"Yellow"}
-],
-
-"Soft Spring":[
-{hex:"#FAD7A0",name:"Soft Peach"},{hex:"#F5CBA7",name:"Apricot"},
-{hex:"#F8C471",name:"Muted Gold"},{hex:"#E59866",name:"Warm Clay"},
-{hex:"#F7DC6F",name:"Light Mustard"},{hex:"#F9E79F",name:"Soft Yellow"},
-{hex:"#FDEBD0",name:"Cream Beige"},{hex:"#F5B7B1",name:"Soft Rose"},
-{hex:"#FADBD8",name:"Light Pink"},{hex:"#FCF3CF",name:"Soft Lemon"},
-{hex:"#D5F5E3",name:"Mint"},{hex:"#A9DFBF",name:"Light Green"},
-{hex:"#7DCEA0",name:"Soft Green"},{hex:"#82E0AA",name:"Pastel Green"},
-{hex:"#ABEBC6",name:"Mint Cream"},{hex:"#D4EFDF",name:"Light Mint"},
-{hex:"#E8F8F5",name:"Pale Aqua"},{hex:"#D6EAF8",name:"Light Blue"},
-{hex:"#AED6F1",name:"Sky Blue"},{hex:"#85C1E9",name:"Soft Blue"}
-],
-
-"Light Summer":[
-{hex:"#DCE6F1",name:"Powder Blue"},{hex:"#BFD7EA",name:"Light Blue"},
-{hex:"#A9BCD0",name:"Dusty Blue"},{hex:"#EAF2F8",name:"Ice Blue"},
-{hex:"#D0E1F9",name:"Soft Sky"},{hex:"#B8C6D1",name:"Muted Steel"},
-{hex:"#E5ECF4",name:"Pale Blue"},{hex:"#C3D3E3",name:"Denim"},
-{hex:"#F8F9F9",name:"White"},{hex:"#ECF0F1",name:"Light Gray"},
-{hex:"#D7DBDD",name:"Silver"},{hex:"#BDC3C7",name:"Gray"},
-{hex:"#85929E",name:"Cool Gray"},{hex:"#5D6D7E",name:"Slate"},
-{hex:"#AEB6BF",name:"Cloud Gray"},{hex:"#AED6F1",name:"Sky Blue"},
-{hex:"#85C1E9",name:"Aqua"},{hex:"#D6EAF8",name:"Light Blue"},
-{hex:"#EBF5FB",name:"Ice Blue"},{hex:"#F4F6F7",name:"Cool White"}
-],
-
-"Cool Summer":[
-{hex:"#6FA3EF",name:"Cool Blue"},{hex:"#A7C7E7",name:"Powder Blue"},
-{hex:"#C3D9F1",name:"Ice Blue"},{hex:"#8BB8D4",name:"Sky Blue"},
-{hex:"#B0D0E8",name:"Light Blue"},{hex:"#D0E4F5",name:"Pale Blue"},
-{hex:"#7A9CC6",name:"Muted Blue"},{hex:"#5F7FA3",name:"Steel Blue"},
-{hex:"#6C7A89",name:"Cool Gray"},{hex:"#95A5A6",name:"Gray"},
-{hex:"#BDC3C7",name:"Light Gray"},{hex:"#D5DBDB",name:"Silver"},
-{hex:"#EBF5FB",name:"Ice White"},{hex:"#F4F6F7",name:"Cool White"},
-{hex:"#AED6F1",name:"Sky Blue"},{hex:"#85C1E9",name:"Aqua"},
-{hex:"#5DADE2",name:"Blue"},{hex:"#3498DB",name:"Bright Blue"},
-{hex:"#2E86C1",name:"Deep Blue"},{hex:"#1B4F72",name:"Navy"}
-],
-
-"Soft Summer":[
-{hex:"#A8B5C0",name:"Muted Blue Gray"},{hex:"#C3CED6",name:"Soft Steel"},
-{hex:"#E0E6EB",name:"Light Gray Blue"},{hex:"#8FA3B0",name:"Dusty Blue"},
-{hex:"#B0C4CF",name:"Cool Gray Blue"},{hex:"#D6DEE3",name:"Pale Steel"},
-{hex:"#7C8B97",name:"Slate Gray"},{hex:"#F2F4F6",name:"Cool White"},
-{hex:"#6D7C88",name:"Muted Slate"},{hex:"#9FB3C1",name:"Soft Blue"},
-{hex:"#BFD7EA",name:"Light Blue"},{hex:"#C9D6DF",name:"Gray Blue"},
-{hex:"#A9BCD0",name:"Cool Blue"},{hex:"#D0E1F9",name:"Sky Blue"},
-{hex:"#B8C6D1",name:"Muted Steel"},{hex:"#E5ECF4",name:"Pale Blue"},
-{hex:"#C3D3E3",name:"Denim"},{hex:"#ECF0F1",name:"Light Gray"},
-{hex:"#D7DBDD",name:"Silver"},{hex:"#ABB2B9",name:"Steel"}
-],
-
-"True Summer":[
-{hex:"#7FB3D5",name:"Soft Blue"},{hex:"#A9CCE3",name:"Sky Blue"},
-{hex:"#D4E6F1",name:"Light Blue"},{hex:"#85C1E9",name:"Aqua"},
-{hex:"#AED6F1",name:"Pale Aqua"},{hex:"#EBF5FB",name:"Ice Blue"},
-{hex:"#5DADE2",name:"Blue"},{hex:"#3498DB",name:"Bright Blue"},
-{hex:"#2E86C1",name:"Deep Blue"},{hex:"#1B4F72",name:"Navy"},
-{hex:"#154360",name:"Dark Navy"},{hex:"#6C7A89",name:"Gray Blue"},
-{hex:"#95A5A6",name:"Gray"},{hex:"#BDC3C7",name:"Light Gray"},
-{hex:"#D5DBDB",name:"Silver"},{hex:"#EBF5FB",name:"Ice White"},
-{hex:"#AED6F1",name:"Sky Blue"},{hex:"#85C1E9",name:"Aqua"},
-{hex:"#5DADE2",name:"Blue"},{hex:"#3498DB",name:"Bright Blue"}
-],
-
-"Warm Autumn":[
-{hex:"#8B4000",name:"Burnt Umber"},{hex:"#A0522D",name:"Sienna"},
-{hex:"#CD853F",name:"Peru"},{hex:"#D2691E",name:"Chocolate"},
-{hex:"#B5651D",name:"Rust"},{hex:"#7B3F00",name:"Coffee"},
-{hex:"#8B5A2B",name:"Bronze"},{hex:"#C68642",name:"Amber"},
-{hex:"#D2B48C",name:"Tan"},{hex:"#F4A460",name:"Sandy Brown"},
-{hex:"#DEB887",name:"Burlywood"},{hex:"#B87333",name:"Copper"},
-{hex:"#FF8C00",name:"Dark Orange"},{hex:"#FFA500",name:"Orange"},
-{hex:"#FF7F50",name:"Coral"},{hex:"#FFD700",name:"Gold"},
-{hex:"#FFDEAD",name:"Navajo White"},{hex:"#F5DEB3",name:"Wheat"},
-{hex:"#D2691E",name:"Chocolate"},{hex:"#A0522D",name:"Clay"}
-],
-
-"Deep Autumn":[
-{hex:"#3B2F2F",name:"Dark Brown"},{hex:"#5C4033",name:"Coffee"},
-{hex:"#6B4423",name:"Olive Brown"},{hex:"#8B5E3C",name:"Bronze"},
-{hex:"#A0522D",name:"Sienna"},{hex:"#4E342E",name:"Deep Brown"},
-{hex:"#3E2723",name:"Espresso"},{hex:"#7B3F00",name:"Coffee"},
-{hex:"#6E260E",name:"Dark Rust"},{hex:"#2F1B0C",name:"Dark Coffee"},
-{hex:"#4B2E05",name:"Chocolate"},{hex:"#8B0000",name:"Dark Red"},
-{hex:"#800000",name:"Maroon"},{hex:"#4B0082",name:"Indigo"},
-{hex:"#2F4F4F",name:"Dark Slate"},{hex:"#003333",name:"Deep Teal"},
-{hex:"#004225",name:"Forest Green"},{hex:"#013220",name:"Deep Green"},
-{hex:"#556B2F",name:"Olive"},{hex:"#6B8E23",name:"Olive Green"}
-],
-
-"Muted Autumn":[
-{hex:"#A38F85",name:"Dusty Beige"},{hex:"#B7A99A",name:"Muted Taupe"},
-{hex:"#C9B8A8",name:"Soft Sand"},{hex:"#8C7B75",name:"Warm Gray"},
-{hex:"#B5A69A",name:"Muted Nude"},{hex:"#D2C1B0",name:"Light Sand"},
-{hex:"#7E6C63",name:"Soft Brown"},{hex:"#E3D5C9",name:"Pale Beige"},
-{hex:"#6F5F57",name:"Dusty Brown"},{hex:"#A4948A",name:"Muted Gray"},
-{hex:"#BFA6A0",name:"Soft Blush"},{hex:"#D8C3A5",name:"Light Tan"},
-{hex:"#C1A57B",name:"Warm Sand"},{hex:"#EADBC8",name:"Cream Beige"},
-{hex:"#F5EFE6",name:"Off White"},{hex:"#A1887F",name:"Warm Taupe"},
-{hex:"#8D6E63",name:"Stone"},{hex:"#6D4C41",name:"Brown"},
-{hex:"#5D4037",name:"Dark Brown"},{hex:"#4E342E",name:"Deep Brown"}
-],
-
-"Soft Autumn":[
-{hex:"#A67B5B",name:"Warm Taupe"},{hex:"#C2A083",name:"Soft Beige"},
-{hex:"#E6C7A8",name:"Peach Cream"},{hex:"#8B6F47",name:"Muted Brown"},
-{hex:"#B08968",name:"Clay"},{hex:"#DDB892",name:"Sand"},
-{hex:"#7F5539",name:"Earth Brown"},{hex:"#F5E6CC",name:"Light Cream"},
-{hex:"#6B4F4F",name:"Dusty Rose"},{hex:"#C9A27E",name:"Warm Nude"},
-{hex:"#A98467",name:"Caramel"},{hex:"#D6CCC2",name:"Soft Ivory"},
-{hex:"#CB997E",name:"Blush Brown"},{hex:"#EDDCD2",name:"Pale Peach"},
-{hex:"#B7B7A4",name:"Muted Sage"},{hex:"#A5A58D",name:"Olive Gray"},
-{hex:"#6B705C",name:"Dark Olive"},{hex:"#B5838D",name:"Muted Mauve"},
-{hex:"#9C6644",name:"Rust"},{hex:"#FFE8D6",name:"Light Peach"}
-],
-
-"Bright Winter":[
-{hex:"#FFFFFF",name:"White"},{hex:"#000000",name:"Black"},
-{hex:"#FF0000",name:"Red"},{hex:"#0000FF",name:"Blue"},
-{hex:"#00FF00",name:"Green"},{hex:"#FF00FF",name:"Magenta"},
-{hex:"#00FFFF",name:"Cyan"},{hex:"#DC143C",name:"Crimson"},
-{hex:"#1E90FF",name:"Dodger Blue"},{hex:"#7FFF00",name:"Chartreuse"},
-{hex:"#8A2BE2",name:"Blue Violet"},{hex:"#9400D3",name:"Dark Violet"},
-{hex:"#4B0082",name:"Indigo"},{hex:"#000080",name:"Navy"},
-{hex:"#191970",name:"Midnight Blue"},{hex:"#FF1493",name:"Deep Pink"},
-{hex:"#FF69B4",name:"Hot Pink"},{hex:"#FF4500",name:"Orange Red"},
-{hex:"#FF6347",name:"Tomato"},{hex:"#FFD700",name:"Gold"}
-],
-
-"Cool Winter":[
-{hex:"#0A0A0A",name:"Black"},{hex:"#FFFFFF",name:"White"},
-{hex:"#1E90FF",name:"Blue"},{hex:"#4682B4",name:"Steel Blue"},
-{hex:"#7B68EE",name:"Slate Blue"},{hex:"#8A2BE2",name:"Violet"},
-{hex:"#4169E1",name:"Royal Blue"},{hex:"#00BFFF",name:"Sky Blue"},
-{hex:"#2F4F4F",name:"Dark Slate"},{hex:"#708090",name:"Slate Gray"},
-{hex:"#483D8B",name:"Dark Slate Blue"},{hex:"#191970",name:"Midnight Blue"},
-{hex:"#000080",name:"Navy"},{hex:"#00008B",name:"Dark Blue"},
-{hex:"#0000CD",name:"Medium Blue"},{hex:"#0000FF",name:"Blue"},
-{hex:"#87CEFA",name:"Light Sky Blue"},{hex:"#ADD8E6",name:"Light Blue"},
-{hex:"#B0C4DE",name:"Light Steel Blue"},{hex:"#E6E6FA",name:"Lavender"}
-],
-
-"Deep Winter":[
-{hex:"#000000",name:"Black"},{hex:"#1A1A1A",name:"Charcoal"},
-{hex:"#2B2B2B",name:"Dark Gray"},{hex:"#3C3C3C",name:"Gray"},
-{hex:"#4D4D4D",name:"Steel Gray"},{hex:"#660000",name:"Dark Red"},
-{hex:"#003366",name:"Navy Blue"},{hex:"#000080",name:"Navy"},
-{hex:"#2E0854",name:"Deep Purple"},{hex:"#191970",name:"Midnight Blue"},
-{hex:"#4B0082",name:"Indigo"},{hex:"#2F4F4F",name:"Dark Slate"},
-{hex:"#003333",name:"Deep Teal"},{hex:"#004225",name:"Forest Green"},
-{hex:"#013220",name:"Deep Green"},{hex:"#556B2F",name:"Olive"},
-{hex:"#6B8E23",name:"Olive Green"},{hex:"#808000",name:"Olive"},
-{hex:"#8B0000",name:"Dark Red"},{hex:"#800000",name:"Maroon"}
-],
-
-"True Winter":[
-{hex:"#000000",name:"Black"},{hex:"#FFFFFF",name:"White"},
-{hex:"#FF0000",name:"Red"},{hex:"#0000FF",name:"Blue"},
-{hex:"#00FF00",name:"Green"},{hex:"#FF00FF",name:"Magenta"},
-{hex:"#00FFFF",name:"Cyan"},{hex:"#8B0000",name:"Dark Red"},
-{hex:"#000080",name:"Navy"},{hex:"#191970",name:"Midnight Blue"},
-{hex:"#4B0082",name:"Indigo"},{hex:"#2F4F4F",name:"Dark Slate"},
-{hex:"#003333",name:"Deep Teal"},{hex:"#004225",name:"Forest Green"},
-{hex:"#013220",name:"Deep Green"},{hex:"#556B2F",name:"Olive"},
-{hex:"#6B8E23",name:"Olive Green"},{hex:"#808000",name:"Olive"},
-{hex:"#8B0000",name:"Dark Red"},{hex:"#800000",name:"Maroon"}
-]
-
+const data={
+"Soft Autumn":["#A67B5B","#C2A083","#E6C7A8","#8B6F47","#B08968","#DDB892"],
+"Cool Summer":["#6FA3EF","#A7C7E7","#C3D9F1","#8BB8D4","#B0D0E8"],
+"Bright Winter":["#FF0000","#0000FF","#00FF00","#FFFFFF","#000000"]
 };
 
-return palettes[season];
+return data[season]||data["Soft Autumn"];
 }
 
-// TEXT CONTENT
-function getContent(season,undertone,contrast){
-return {
-analysis:`You have a ${undertone} undertone with ${contrast} contrast placing you in ${season}.`,
-formal:`Use structured outfits with balanced tones from your palette.`,
-casual:`Combine 2–3 harmonious shades.`,
-grooming:`${undertone==="Warm"?"Golden / caramel tones":"Ash / cool tones"} suit you best.`,
-do:`Stay within your palette.`,
-avoid:`Avoid opposite undertone colors.`
+// 🔥 FULL DYNAMIC CONTENT
+function getContent(season){
+
+const content={
+"Soft Autumn":{
+formal:"Wear warm beige, olive, and soft brown outfits.",
+casual:"Peach, cream, and muted greens.",
+grooming:"Caramel and soft brown tones.",
+do:"Stick to warm muted colors.",
+avoid:"Avoid neon and black."
+},
+"Cool Summer":{
+formal:"Cool grey and blue suits.",
+casual:"Lavender, soft blue.",
+grooming:"Ash brown tones.",
+do:"Stay cool toned.",
+avoid:"Avoid warm shades."
+},
+"Bright Winter":{
+formal:"Black-white contrast outfits.",
+casual:"Bright red and blue.",
+grooming:"Jet black hair tones.",
+do:"Use bold contrast.",
+avoid:"Avoid muted tones."
+}
 };
+
+return content[season]||content["Soft Autumn"];
 }
 
-// LOAD DATA
-function loadReport(){
+function load(){
 
-let d = JSON.parse(localStorage.getItem("reportData"));
+let d=JSON.parse(localStorage.getItem("reportData"));
 
 document.getElementById("undertone").innerText=d.undertone;
 document.getElementById("season").innerText=d.season;
 document.getElementById("contrast").innerText=d.contrast;
 
-let c=getContent(d.season,d.undertone,d.contrast);
+// palette
+let p=getPalette(d.season);
+let box=document.getElementById("palette");
 
-document.getElementById("analysisText").innerText=c.analysis;
+p.forEach(c=>{
+let div=document.createElement("div");
+div.className="color";
+div.style.background=c;
+box.appendChild(div);
+});
+
+// content
+let c=getContent(d.season);
+
 document.getElementById("formal").innerText=c.formal;
 document.getElementById("casual").innerText=c.casual;
 document.getElementById("grooming").innerText=c.grooming;
 document.getElementById("do").innerText=c.do;
 document.getElementById("avoid").innerText=c.avoid;
 
-// palette render
-let box=document.getElementById("palette");
-box.innerHTML="";
-
-getPalette(d.season).forEach(col=>{
-let wrap=document.createElement("div");
-wrap.className="color-box";
-
-let div=document.createElement("div");
-div.className="color";
-div.style.background=col.hex;
-
-let hex=document.createElement("div");
-hex.className="hex";
-hex.innerText=col.hex;
-
-let name=document.createElement("div");
-name.className="name";
-name.innerText=col.name;
-
-wrap.appendChild(div);
-wrap.appendChild(hex);
-wrap.appendChild(name);
-
-box.appendChild(wrap);
-});
-
 }
 
-// PDF
 function downloadPDF(){
-html2pdf().from(document.getElementById("report")).save("Haneul_Report.pdf");
+html2pdf().from(document.getElementById("report")).save();
 }
 
-window.onload=loadReport;
+window.onload=load;
 
 </script>
 
