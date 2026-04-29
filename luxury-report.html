@@ -8,78 +8,41 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
-body{
-    background:#f5f3ef;
-    font-family:'Noto Sans';
-    margin:0;
-}
-
-.page{
-    width:850px;
-    margin:auto;
-    background:#fff;
-    padding:50px;
-}
+body{background:#f5f3ef;font-family:'Noto Sans';margin:0;}
+.page{width:850px;margin:auto;background:#fff;padding:50px;}
 
 .title{
-    font-family:'Playfair Display';
-    text-align:center;
-    font-size:34px;
-    margin-bottom:10px;
+font-family:'Playfair Display';
+text-align:center;
+font-size:34px;
 }
 
-.subtitle{
-    text-align:center;
-    color:#888;
-    margin-bottom:30px;
-}
-
-.section{
-    margin-bottom:30px;
-}
-
+.section{margin-bottom:30px;}
 .section-title{
-    font-family:'Playfair Display';
-    font-size:18px;
-    border-bottom:1px solid #eee;
-    margin-bottom:10px;
+font-family:'Playfair Display';
+font-size:18px;
+border-bottom:1px solid #eee;
+margin-bottom:10px;
 }
 
 .card{
-    background:#fafafa;
-    padding:18px;
-    border-radius:10px;
-    line-height:1.6;
+background:#fafafa;
+padding:18px;
+border-radius:10px;
+line-height:1.6;
 }
 
-/* PALETTE */
 .palette{
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-    gap:12px;
+display:grid;
+grid-template-columns:repeat(6,1fr);
+gap:12px;
 }
 
-.color-box{
-    text-align:center;
-}
-
-.color{
-    width:55px;
-    height:55px;
-    border-radius:8px;
-    margin:auto;
-}
-
-.hex{
-    font-size:11px;
-}
-
-.name{
-    font-size:11px;
-    color:#666;
-}
+.color-box{text-align:center;}
+.color{width:55px;height:55px;border-radius:8px;margin:auto;}
+.hex{font-size:11px;}
+.name{font-size:11px;color:#666;}
 </style>
-
 </head>
 
 <body>
@@ -87,48 +50,29 @@ body{
 <div id="report" class="page">
 
 <div class="title">HANEUL PALETTE</div>
-<div class="subtitle">Signature Style Profile</div>
 
-<!-- PROFILE -->
-<div class="section">
-<div class="section-title">Client Profile</div>
-<div class="card">
+<div class="section card">
 <b>Undertone:</b> <span id="undertone"></span><br>
 <b>Season:</b> <span id="season"></span><br>
 <b>Contrast:</b> <span id="contrast"></span><br><br>
-
 <span id="analysisText"></span>
 </div>
-</div>
 
-<!-- PALETTE -->
 <div class="section">
 <div class="section-title">Your Refined Colour Palette</div>
 <div id="palette" class="palette"></div>
 </div>
 
-<!-- STYLING -->
-<div class="section">
-<div class="section-title">Styling Guidance</div>
-<div class="card">
+<div class="section card">
 <b>Formal:</b><br><span id="formal"></span><br><br>
 <b>Casual:</b><br><span id="casual"></span>
 </div>
-</div>
 
-<!-- GROOMING -->
-<div class="section">
-<div class="section-title">Grooming Suggestions</div>
-<div class="card" id="grooming"></div>
-</div>
+<div class="section card" id="grooming"></div>
 
-<!-- DO / DONT -->
-<div class="section">
-<div class="section-title">Do’s & Don’ts</div>
-<div class="card">
+<div class="section card">
 <b>Do:</b><br><span id="do"></span><br><br>
 <b>Avoid:</b><br><span id="avoid"></span>
-</div>
 </div>
 
 </div>
@@ -139,70 +83,36 @@ body{
 
 <script>
 
-// 🔥 25 COLOR PALETTE (EXAMPLE: SOFT AUTUMN)
-function getPalette(season){
+// 🔥 GENERATE 25 COLORS BASED ON SEASON FAMILY
+function generatePalette(season){
 
-if(season==="Soft Autumn"){
-return [
-{hex:"#A67B5B",name:"Warm Taupe"},
-{hex:"#C2A083",name:"Soft Beige"},
-{hex:"#E6C7A8",name:"Peach Cream"},
-{hex:"#8B6F47",name:"Muted Brown"},
-{hex:"#B08968",name:"Clay"},
-{hex:"#DDB892",name:"Sand"},
-{hex:"#7F5539",name:"Earth Brown"},
-{hex:"#F5E6CC",name:"Light Cream"},
-{hex:"#6B4F4F",name:"Dusty Rose"},
-{hex:"#C9A27E",name:"Warm Nude"},
-{hex:"#A98467",name:"Caramel"},
-{hex:"#D6CCC2",name:"Soft Ivory"},
-{hex:"#CB997E",name:"Blush Brown"},
-{hex:"#EDDCD2",name:"Pale Peach"},
-{hex:"#B7B7A4",name:"Muted Sage"},
-{hex:"#A5A58D",name:"Olive Gray"},
-{hex:"#6B705C",name:"Dark Olive"},
-{hex:"#B5838D",name:"Muted Mauve"},
-{hex:"#9C6644",name:"Rust"},
-{hex:"#FFE8D6",name:"Light Peach"},
-{hex:"#E0BFAE",name:"Soft Coral"},
-{hex:"#C19A6B",name:"Camel"},
-{hex:"#A47148",name:"Burnt Sienna"},
-{hex:"#8D6E63",name:"Warm Stone"},
-{hex:"#D7CCC8",name:"Pale Sand"}
-];
+let baseWarm=["#A67B5B","#C2A083","#E6C7A8","#8B6F47","#B08968"];
+let baseCool=["#6FA3EF","#A7C7E7","#C3D9F1","#8BB8D4","#B0D0E8"];
+
+let arr = season.includes("Autumn") || season.includes("Spring") ? baseWarm : baseCool;
+
+let result=[];
+
+for(let i=0;i<25;i++){
+let c=arr[i % arr.length];
+result.push({hex:c,name:"Custom Shade "+(i+1)});
 }
 
-// fallback
-return [{hex:"#ccc",name:"Neutral"}];
+return result;
 }
 
-
-// 🔥 CONTENT
-function getContent(season, undertone, contrast){
-
+// CONTENT
+function getContent(season,undertone,contrast){
 return {
-analysis:
-`You have a ${undertone} undertone with ${contrast} contrast. This places you in the ${season} category, meaning your natural harmony works best with balanced, muted tones rather than extreme brightness or contrast.`,
-
-formal:
-`Choose structured outfits using your palette. Neutral bases like taupe, camel, or warm beige with accent shades create a polished formal look.`,
-
-casual:
-`Stick to 2–3 coordinated colors from your palette. Avoid mixing cool and warm tones.`,
-
-grooming:
-`${undertone==="Warm"?"Golden brown, caramel, auburn":"Ash brown, cool black"} hair tones complement your natural coloring. Beard tones should stay soft and natural.`,
-
-do:
-`Wear colors from your palette, maintain harmony, and choose muted balanced tones.`,
-
-avoid:
-`Avoid neon, overly bright, or cool icy colors that clash with your undertone.`
+analysis:`You have a ${undertone} undertone with ${contrast} contrast placing you in ${season}.`,
+formal:`Structured outfits using your palette enhance elegance.`,
+casual:`Use 2–3 harmonious colors.`,
+grooming:`${undertone==="Warm"?"Golden/caramel":"Ash/cool"} tones suit best.`,
+do:`Stay within palette.`,
+avoid:`Avoid opposite undertone colors.`
 };
 }
 
-
-// LOAD REPORT
 function loadReport(){
 
 let d=JSON.parse(localStorage.getItem("reportData"));
@@ -211,8 +121,8 @@ document.getElementById("undertone").innerText=d.undertone;
 document.getElementById("season").innerText=d.season;
 document.getElementById("contrast").innerText=d.contrast;
 
-// TEXT
 let c=getContent(d.season,d.undertone,d.contrast);
+
 document.getElementById("analysisText").innerText=c.analysis;
 document.getElementById("formal").innerText=c.formal;
 document.getElementById("casual").innerText=c.casual;
@@ -220,11 +130,10 @@ document.getElementById("grooming").innerText=c.grooming;
 document.getElementById("do").innerText=c.do;
 document.getElementById("avoid").innerText=c.avoid;
 
-// PALETTE
 let box=document.getElementById("palette");
 box.innerHTML="";
 
-getPalette(d.season).forEach(c=>{
+generatePalette(d.season).forEach(c=>{
 let wrap=document.createElement("div");
 wrap.className="color-box";
 
