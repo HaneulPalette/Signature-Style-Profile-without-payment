@@ -1,22 +1,76 @@
 body{
-font-family:Arial;
+margin:0;
+font-family:'Noto Sans';
 background:#f5f3ef;
 text-align:center;
 }
 
-.container{
-margin-top:60px;
+.container{margin-top:60px;}
+
+.title{
+font-family:'Playfair Display';
+font-size:34px;
+margin-bottom:10px;
 }
 
-.logo{
-width:80px;
+.subtitle{
+color:#777;
+margin-bottom:30px;
 }
+
+.upload-box{margin:20px;}
 
 button{
-padding:10px 20px;
-background:black;
-color:white;
+padding:12px 25px;
 border:none;
-border-radius:6px;
+background:#111;
+color:#fff;
 cursor:pointer;
+border-radius:6px;
+}
+
+.preview{
+margin-top:30px;
+display:none;
+background:#fff;
+width:320px;
+margin:auto;
+padding:20px;
+border-radius:12px;
+box-shadow:0 4px 15px rgba(0,0,0,0.05);
+}
+
+.page{
+width:850px;
+margin:auto;
+background:#fff;
+padding:50px;
+}
+
+.section{margin-bottom:30px;}
+
+.section-title{
+font-family:'Playfair Display';
+font-size:18px;
+border-bottom:1px solid #eee;
+margin-bottom:10px;
+}
+
+.card{
+background:#fafafa;
+padding:18px;
+border-radius:10px;
+}
+
+.palette{
+display:grid;
+grid-template-columns:repeat(6,1fr);
+gap:12px;
+}
+
+.color{
+width:55px;
+height:55px;
+border-radius:8px;
+margin:auto;
 }
