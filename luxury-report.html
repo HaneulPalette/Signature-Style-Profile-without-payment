@@ -4,11 +4,6 @@ function loadReport() {
 
     document.getElementById("undertone").innerText = data.undertone;
     document.getElementById("season").innerText = data.season;
-
-    document.getElementById("recommend").innerHTML =
-        "Formal: " + data.recommend.formal +
-        "<br><br>Casual: " + data.recommend.casual;
-
     document.getElementById("avoid").innerText = data.avoid;
     document.getElementById("grooming").innerText = data.grooming;
 
@@ -27,5 +22,5 @@ window.onload = loadReport;
 
 function downloadPDF() {
     html2pdf().from(document.getElementById("report"))
-    .save("Haneul_Signature_Profile.pdf");
+    .save("Haneul_Report.pdf");
 }
