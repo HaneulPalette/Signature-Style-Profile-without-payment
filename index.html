@@ -1,38 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
 <title>Haneul Palette</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="container">
+<img src="logo.png" width="80">
 
-    <img src="logo.png" class="logo">
+<h2>Signature Style Profile</h2>
 
-    <h1>Signature Style Profile</h1>
+<input type="file" id="img">
 
-    <input type="file" id="imageUpload">
+<button onclick="analyze()">Analyze</button>
 
-    <button onclick="analyze()">Analyze</button>
+<div id="preview" style="display:none">
 
-    <!-- 🔥 PREVIEW (ONLY 3 RESULTS) -->
-    <div id="preview" class="hidden">
+    <h3>Preview Results</h3>
 
-        <h2>Quick Style Signals</h2>
+    <p>Undertone: <span id="p1"></span></p>
+    <p>Season: <span id="p2"></span></p>
+    <p>Contrast: <span id="p3"></span></p>
 
-        <p>Undertone: <span id="p1"></span></p>
-        <p>Season: <span id="p2"></span></p>
-        <p>Contrast: <span id="p3"></span></p>
-
-        <button onclick="openReport()">View Full Report</button>
-
-    </div>
+    <button onclick="openReport()">Full Report</button>
 
 </div>
 
 <script src="script.js"></script>
+
 </body>
 </html>
