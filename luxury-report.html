@@ -1,24 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Report</title>
+</head>
+
+<body>
+
+<h2>Haneul Palette Report</h2>
+
+<p id="undertone"></p>
+<p id="season"></p>
+
+<div id="palette"></div>
+
+<p id="recommend"></p>
+
+<button onclick="downloadPDF()">Download PDF</button>
+
 <script>
-function load() {
+function loadReport() {
 
-    let d = JSON.parse(localStorage.getItem("report"));
+    let data = JSON.parse(localStorage.getItem("reportData"));
 
-    document.getElementById("season").innerText = d.season;
-    document.getElementById("undertone").innerText = d.undertone;
-
-    document.getElementById("recommend").innerText = d.recommend.formal;
+    document.getElementById("undertone").innerText = data.undertone;
+    document.getElementById("season").innerText = data.season;
+    document.getElementById("recommend").innerText = data.recommend.formal;
 
     let box = document.getElementById("palette");
 
-    d.palette.forEach(c => {
-        let div = document.createElement("div");
-        div.style.width = "50px";
-        div.style.height = "50px";
-        div.style.background = c;
-        div.style.display = "inline-block";
-        box.appendChild(div);
+    data.palette.forEach(c => {
+        let d = document.createElement("div");
+        d.style.width = "40px";
+        d.style.height = "40px";
+        d.style.background = c;
+        d.style.display = "inline-block";
+        d.style.margin = "3px";
+        box.appendChild(d);
     });
 }
 
-window.onload = load;
+function downloadPDF() {
+    window.print();
+}
+
+window.onload = loadReport;
 </script>
+
+</body>
+</html>
