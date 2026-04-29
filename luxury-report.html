@@ -1,49 +1,89 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Report</title>
+<meta charset="UTF-8">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Noto+Sans&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+body{background:#f5f3ef;font-family:'Noto Sans';}
+.page{width:800px;margin:auto;background:white;padding:40px;}
+.title{font-family:'Playfair Display';font-size:28px;text-align:center;}
+.color{width:50px;height:50px;display:inline-block;margin:5px;}
+</style>
+
 </head>
 
 <body>
 
-<h2>Haneul Palette Report</h2>
+<div id="report" class="page">
 
-<p id="undertone"></p>
-<p id="season"></p>
+<div class="title">HANEUL PALETTE</div>
+
+<p>Undertone: <span id="undertone"></span></p>
+<p>Season: <span id="season"></span></p>
 
 <div id="palette"></div>
 
 <p id="recommend"></p>
+<p id="avoid"></p>
 
+</div>
+
+<div style="text-align:center;margin:20px;">
 <button onclick="downloadPDF()">Download PDF</button>
+</div>
 
 <script>
-function loadReport() {
 
-    let data = JSON.parse(localStorage.getItem("reportData"));
+function getPalette(season){
 
-    document.getElementById("undertone").innerText = data.undertone;
-    document.getElementById("season").innerText = data.season;
-    document.getElementById("recommend").innerText = data.recommend.formal;
+    let palettes={
+        "Light Spring":["#FFF1CC","#FFE4B5","#FFFACD"],
+        "Bright Spring":["#FF5A36","#FFD700","#FF69B4"],
+        "Soft Autumn":["#A67B5B","#C2A083","#E6C7A8"],
+        "Deep Autumn":["#3B2F2F","#5C4033","#6B4423"],
 
-    let box = document.getElementById("palette");
+        "Light Summer":["#DCE6F1","#E3EDF7","#BFD7EA"],
+        "Soft Summer":["#A8B5C0","#C3CED6","#E0E6EB"],
+        "Bright Winter":["#FF0000","#0000FF","#00FFFF"],
+        "Deep Winter":["#000000","#1A1A1A","#2B2B2B"]
+    };
 
-    data.palette.forEach(c => {
-        let d = document.createElement("div");
-        d.style.width = "40px";
-        d.style.height = "40px";
-        d.style.background = c;
-        d.style.display = "inline-block";
-        d.style.margin = "3px";
-        box.appendChild(d);
+    return palettes[season] || ["#cccccc"];
+}
+
+function loadReport(){
+
+    let d = JSON.parse(localStorage.getItem("reportData"));
+
+    document.getElementById("undertone").innerText=d.undertone;
+    document.getElementById("season").innerText=d.season;
+
+    let box=document.getElementById("palette");
+
+    getPalette(d.season).forEach(c=>{
+        let div=document.createElement("div");
+        div.className="color";
+        div.style.background=c;
+        box.appendChild(div);
     });
+
+    document.getElementById("recommend").innerText=
+    "Wear colors aligned with your season.";
+
+    document.getElementById("avoid").innerText=
+    "Avoid conflicting undertone colors.";
 }
 
-function downloadPDF() {
-    window.print();
+function downloadPDF(){
+    html2pdf().from(document.getElementById("report")).save("Haneul_Report.pdf");
 }
 
-window.onload = loadReport;
+window.onload=loadReport;
+
 </script>
 
 </body>
