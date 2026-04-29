@@ -15,19 +15,16 @@
 <div class="title">HANEUL PALETTE</div>
 <div class="subtitle">Signature Style Profile</div>
 
-<div class="upload-box">
-<input type="file" id="img" accept="image/*">
-<br>
+<input type="file" id="img"><br>
 <button onclick="analyze()">Analyze</button>
-</div>
 
 <div id="preview" class="preview">
-    <h3>Preview</h3>
-    <p><b>Undertone:</b> <span id="p1"></span></p>
-    <p><b>Season:</b> <span id="p2"></span></p>
-    <p><b>Contrast:</b> <span id="p3"></span></p>
+<h3>Preview</h3>
+<p>Undertone: <span id="p1"></span></p>
+<p>Season: <span id="p2"></span></p>
+<p>Contrast: <span id="p3"></span></p>
 
-    <button class="download-btn" onclick="goToReport()">Get Full Report</button>
+<button onclick="goToReport()">Get Full Report</button>
 </div>
 
 </div>
@@ -36,30 +33,26 @@
 
 function analyze(){
 
-let file = document.getElementById("img").files[0];
+let file=document.getElementById("img").files[0];
+if(!file){alert("Upload image");return;}
 
-if(!file){
-    alert("Upload image first");
-    return;
-}
+let img=new Image();
+let reader=new FileReader();
 
-let img = new Image();
-let reader = new FileReader();
+reader.onload=e=>img.src=e.target.result;
 
-reader.onload = e => img.src = e.target.result;
+img.onload=function(){
 
-img.onload = function(){
+let canvas=document.createElement("canvas");
+let ctx=canvas.getContext("2d");
 
-let canvas = document.createElement("canvas");
-let ctx = canvas.getContext("2d");
-
-canvas.width = 200;
-canvas.height = 200;
+canvas.width=200;
+canvas.height=200;
 
 ctx.drawImage(img,0,0,200,200);
 
-// center sampling
-let data = ctx.getImageData(60,60,80,80).data;
+// center face sampling
+let data=ctx.getImageData(60,60,80,80).data;
 
 let r=0,g=0,b=0,count=0;
 
@@ -72,19 +65,21 @@ count++;
 
 r/=count; g/=count; b/=count;
 
-// analysis
 let brightness=(r+g+b)/3;
 let diffRG=r-g;
 let diffRB=r-b;
 
+// undertone
 let undertone;
 if(diffRB>15 && diffRG>10) undertone="Warm";
 else if(diffRB<-15) undertone="Cool";
 else undertone="Neutral";
 
+// contrast
 let contrastVal=Math.max(r,g,b)-Math.min(r,g,b);
 let contrast=contrastVal>50?"High":"Low";
 
+// season logic
 let season;
 
 if(undertone==="Warm"){
@@ -94,7 +89,6 @@ else if(brightness<120 && contrast==="High") season="Deep Autumn";
 else if(contrast==="Low") season="Soft Autumn";
 else season="Warm Autumn";
 }
-
 else if(undertone==="Cool"){
 if(brightness>170 && contrast==="Low") season="Light Summer";
 else if(brightness>150 && contrast==="High") season="Bright Winter";
@@ -102,21 +96,15 @@ else if(brightness<120 && contrast==="High") season="Deep Winter";
 else if(contrast==="Low") season="Soft Summer";
 else season="Cool Summer";
 }
-
 else{
 if(brightness>150) season="Soft Summer";
 else season="Soft Autumn";
 }
 
-let result={
-undertone:undertone,
-season:season,
-contrast:contrast
-};
+let result={undertone,season,contrast};
 
 localStorage.setItem("reportData",JSON.stringify(result));
 
-// preview
 document.getElementById("p1").innerText=undertone;
 document.getElementById("p2").innerText=season;
 document.getElementById("p3").innerText=contrast;
