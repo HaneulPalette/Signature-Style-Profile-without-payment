@@ -1,28 +1,123 @@
-let reportData = {};
-
-async function analyze() {
-
-    let file = document.getElementById("imageUpload").files[0];
-
-    let formData = new FormData();
-    formData.append("image", file);
-
-    let res = await fetch("http://127.0.0.1:5000/analyze", {
-        method: "POST",
-        body: formData
-    });
-
-    reportData = await res.json();
-
-    // 🔥 ONLY 3 CURIOUSITY POINTS (IMPORTANT)
-    document.getElementById("p1").innerText = reportData.undertone;
-    document.getElementById("p2").innerText = reportData.season;
-    document.getElementById("p3").innerText = reportData.contrast;
-
-    document.getElementById("preview").classList.remove("hidden");
+/* ===== GLOBAL ===== */
+body {
+    margin: 0;
+    font-family: "Arial", sans-serif;
+    background: #f6f4ef;
+    color: #222;
+    text-align: center;
 }
 
-function openReport() {
-    localStorage.setItem("reportData", JSON.stringify(reportData));
-    window.open("luxury-report.html", "_blank");
+/* ===== CONTAINER ===== */
+.container {
+    max-width: 500px;
+    margin: 80px auto;
+    padding: 30px;
+}
+
+/* ===== LOGO ===== */
+.logo {
+    width: 80px;
+    margin-bottom: 15px;
+}
+
+/* ===== TITLE ===== */
+h1 {
+    font-size: 26px;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+/* ===== INPUT ===== */
+input[type="file"] {
+    margin: 20px 0;
+    padding: 10px;
+}
+
+/* ===== BUTTON ===== */
+button {
+    background: #111;
+    color: #fff;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s ease;
+}
+
+button:hover {
+    background: #333;
+}
+
+/* ===== PREVIEW BOX ===== */
+#preview {
+    margin-top: 30px;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* ===== TEXT ===== */
+h2, h3 {
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+/* ===== PREVIEW TEXT ===== */
+#preview p {
+    font-size: 15px;
+    margin: 8px 0;
+}
+
+/* ===== FULL REPORT BUTTON ===== */
+#preview button {
+    margin-top: 15px;
+}
+
+/* ===== PALETTE BOX (REPORT PAGE) ===== */
+#palette {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* ===== COLOR BOX ===== */
+.color-box {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+/* ===== REPORT PAGE LUXURY STYLE ===== */
+.report-page {
+    max-width: 800px;
+    margin: auto;
+    background: #fff;
+    padding: 50px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    border-radius: 12px;
+}
+
+/* ===== SECTION HEADERS ===== */
+.section-title {
+    font-size: 18px;
+    margin-top: 25px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+    font-size: 12px;
+    color: #888;
+    margin-top: 40px;
+}
+
+/* ===== HIDE CLASS ===== */
+.hidden {
+    display: none;
 }
