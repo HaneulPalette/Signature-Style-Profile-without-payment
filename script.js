@@ -1,39 +1,27 @@
-let reportData = null;
+let data = null;
 
 async function analyze() {
 
-    let file = document.getElementById("imageUpload").files[0];
+    let file = document.getElementById("img").files[0];
 
-    if (!file) {
-        alert("Upload image first");
-        return;
-    }
-
-    let formData = new FormData();
-    formData.append("image", file);
+    let form = new FormData();
+    form.append("image", file);
 
     let res = await fetch("http://127.0.0.1:5000/analyze", {
         method: "POST",
-        body: formData
+        body: form
     });
 
-    reportData = await res.json();
+    data = await res.json();
 
-    document.getElementById("p1").innerText = reportData.undertone;
-    document.getElementById("p2").innerText = reportData.season;
-    document.getElementById("p3").innerText = reportData.contrast;
+    document.getElementById("p1").innerText = data.undertone;
+    document.getElementById("p2").innerText = data.season;
+    document.getElementById("p3").innerText = data.contrast;
 
-    document.getElementById("preview").classList.remove("hidden");
+    document.getElementById("preview").style.display = "block";
 }
 
 function openReport() {
-
-    if (!reportData) {
-        alert("Analyze first");
-        return;
-    }
-
-    localStorage.setItem("reportData", JSON.stringify(reportData));
-
+    localStorage.setItem("report", JSON.stringify(data));
     window.open("luxury-report.html");
 }
