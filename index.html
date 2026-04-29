@@ -15,13 +15,11 @@
 <h2>Signature Style Profile</h2>
 
 <input type="file" id="img">
-
 <button onclick="analyze()">Analyze</button>
 
 <div id="preview" style="display:none">
 
 <h3>Preview</h3>
-
 <p>Undertone: <span id="p1"></span></p>
 <p>Season: <span id="p2"></span></p>
 <p>Contrast: <span id="p3"></span></p>
@@ -34,19 +32,19 @@
 
 <script>
 
-let result = {};
+let result={};
 
 function analyze(){
 
-let file = document.getElementById("img").files[0];
-if(!file){ alert("Upload image"); return; }
+let file=document.getElementById("img").files[0];
+if(!file){alert("Upload image");return;}
 
-let img = new Image();
-let reader = new FileReader();
+let img=new Image();
+let reader=new FileReader();
 
-reader.onload = e => img.src = e.target.result;
+reader.onload=e=>img.src=e.target.result;
 
-img.onload = function(){
+img.onload=function(){
 
 let canvas=document.createElement("canvas");
 let ctx=canvas.getContext("2d");
@@ -69,28 +67,29 @@ r/=count; g/=count; b/=count;
 let brightness=(r+g+b)/3;
 let contrast=Math.abs(r-g)+Math.abs(g-b);
 
-let undertone = r>b ? "Warm":"Cool";
+let undertone=r>b?"Warm":"Cool";
 
 let season;
 
-// 16-season simplified mapping
+// improved mapping
 if(undertone==="Warm" && brightness>180 && contrast<60) season="Light Spring";
 else if(undertone==="Warm" && brightness>180) season="Bright Spring";
 else if(undertone==="Warm" && contrast>100) season="Warm Spring";
 else if(undertone==="Warm" && brightness<120) season="Deep Autumn";
-else if(undertone==="Warm") season="Soft Autumn";
+else if(undertone==="Warm" && contrast<60) season="Soft Autumn";
+else season="Muted Autumn";
 
-else if(undertone==="Cool" && brightness>180 && contrast<60) season="Light Summer";
+if(undertone==="Cool" && brightness>180 && contrast<60) season="Light Summer";
 else if(undertone==="Cool" && brightness>180) season="Cool Summer";
 else if(undertone==="Cool" && contrast<60) season="Soft Summer";
 else if(undertone==="Cool" && contrast>120) season="Bright Winter";
 else if(undertone==="Cool" && brightness<120) season="Deep Winter";
 else season="True Winter";
 
-result = {
-undertone: undertone,
-season: season,
-contrast: contrast>80 ? "High":"Low"
+result={
+undertone:undertone,
+season:season,
+contrast:contrast>80?"High":"Low"
 };
 
 document.getElementById("p1").innerText=result.undertone;
@@ -98,7 +97,6 @@ document.getElementById("p2").innerText=result.season;
 document.getElementById("p3").innerText=result.contrast;
 
 document.getElementById("preview").style.display="block";
-
 };
 
 reader.readAsDataURL(file);
@@ -107,12 +105,11 @@ reader.readAsDataURL(file);
 function openReport(){
 
 if(!result.season){
-alert("Analyze first");
-return;
+alert("Analyze first");return;
 }
 
 localStorage.removeItem("reportData");
-localStorage.setItem("reportData", JSON.stringify(result));
+localStorage.setItem("reportData",JSON.stringify(result));
 
 window.open("luxury-report.html","_blank");
 }
